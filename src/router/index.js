@@ -14,6 +14,35 @@ const router = createRouter({
                     component: () => import('@/views/Dashboard.vue')
                 },
                 {
+                    path:'/uikit/message',
+                    name:'message',
+                    component:()=> import('@/views/message.vue')
+
+                },
+                {
+               path:'/uikit/chart',
+               name:'chart',
+              component :()=> import('@/views/chart.vue')
+                },
+                {
+                    path: '/pages/crud',
+                    name: 'crud',
+                    component: () => import('@/views/Animations.vue')
+                },
+                {
+                    path: '/uikit/file',
+                    name: 'upload',
+                    component: () => import('@/views/upload.vue')
+                },
+
+
+
+
+
+
+
+     
+                {
                     path: '/uikit/formlayout',
                     name: 'formlayout',
                     component: () => import('@/views/uikit/FormLayout.vue')
@@ -28,6 +57,8 @@ const router = createRouter({
                     name: 'floatlabel',
                     component: () => import('@/views/uikit/FloatLabel.vue')
                 },
+ 
+                
                 {
                     path: '/uikit/invalidstate',
                     name: 'invalidstate',
@@ -41,7 +72,7 @@ const router = createRouter({
                 {
                     path: '/uikit/table',
                     name: 'table',
-                    component: () => import('@/views/uikit/Table.vue')
+                    component: () => import('@/views/Table.vue')
                 },
                 {
                     path: '/uikit/list',
@@ -56,7 +87,7 @@ const router = createRouter({
                 {
                     path: '/uikit/panel',
                     name: 'panel',
-                    component: () => import('@/views/uikit/Panels.vue')
+                    component: () => import('@/views/Panel.vue')
                 },
 
                 {
@@ -92,15 +123,11 @@ const router = createRouter({
                     ]
                 },
                 {
-                    path: '/uikit/message',
-                    name: 'message',
+                    path: '/uikit/messages',
+                    name: 'messages',
                     component: () => import('@/views/uikit/Messages.vue')
                 },
-                {
-                    path: '/uikit/file',
-                    name: 'file',
-                    component: () => import('@/views/uikit/File.vue')
-                },
+       
                 {
                     path: '/uikit/charts',
                     name: 'charts',
@@ -122,6 +149,11 @@ const router = createRouter({
                     component: () => import('@/views/utilities/Icons.vue')
                 },
                 {
+                    path: '/pages/cruds',
+                    name: 'cruds',
+                    component: () => import('@/views/pages/Crud.vue')
+                },
+                {
                     path: '/pages/timeline',
                     name: 'timeline',
                     component: () => import('@/views/pages/Timeline.vue')
@@ -131,11 +163,7 @@ const router = createRouter({
                     name: 'empty',
                     component: () => import('@/views/pages/Empty.vue')
                 },
-                {
-                    path: '/pages/crud',
-                    name: 'crud',
-                    component: () => import('@/views/pages/Crud.vue')
-                },
+   
                 {
                     path: '/documentation',
                     name: 'documentation',
