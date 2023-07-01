@@ -113,30 +113,149 @@
         </div>
         <div class="col-12 lg:col-6 xl:col-3">
         </div>
-        <div class="col-12 lg:col-6 xl:col-3">
 
-        
-        </div>
-        
-        <div class="card col-12 xl:col-6 " >
-            <Chart  type="bar" :data="lineData" :options="lineOptions" />
-        </div>
-        <div class="card col-12 xl:col-6 ">
-          <Chart type="line" :data="usersinmonth" :options="lineOptions" />
-      </div>
  
     
     </div>
+    <div class="card col-12 xl:col-6 w-full ">
+          <Chart type="bar"  :data="chartData" :options="chartOptions" class="h-30rem" />
+
+      </div>
+        
+    <div class="card col-12 xl:col-6 w-full " >
+            <Chart  type="bar" :data="lineData" :options="lineOptions" />
+        </div>
+ 
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { reactive,ref,onMounted } from 'vue'
+
+
+onMounted(() => {
+    chartData.value = setChartData();
+    chartOptions.value = setChartOptions();
+});
+
+const chartData = ref();
+const chartOptions = ref();
+        
+const setChartData = () => {
+    const documentStyle = getComputedStyle(document.documentElement);
+
+    return {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [
+            // {
+            //     type: 'line',
+            //     label: 'man',
+            //     borderColor: documentStyle.getPropertyValue('--blue-500'),
+            //     borderWidth: 2,
+            //     fill: false,
+            //     tension: 0.4,
+            //     data: [50, 25, 12, 48, 56, 76, 42]
+            // },
+            {
+                type: 'bar',
+                label: 'woman',
+                backgroundColor: documentStyle.getPropertyValue('--green-500'),
+                data: [21, 84, 24, 64, 37, 65, 34],
+                borderColor: 'white',
+                borderWidth: 2
+            },
+            {
+                type: 'bar',
+                label: 'man',
+                backgroundColor: documentStyle.getPropertyValue('--blue-500'),
+                data: [21, 84, 24, 35, 37, 65, 34],
+                borderColor: 'white',
+                borderWidth: 2
+            },
+            {
+                type: 'bar',
+                label: 'coach',
+                backgroundColor: documentStyle.getPropertyValue('--orange-500'),
+                data: [41, 52, 24, 64, 23, 21, 32]
+            },
+            {
+                type: 'bar',
+                label: 'users',
+                backgroundColor: documentStyle.getPropertyValue('--gray-500'),
+                data: [41, 52, 24, 58, 23, 21, 32]
+            }
+            
+            
+        ]
+
+    };
+};
+const setChartOptions = () => {
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColor = documentStyle.getPropertyValue('--text-color');
+    const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
+    const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+
+    return {
+        maintainAspectRatio: false,
+        aspectRatio: 0.6,
+        plugins: {
+            legend: {
+                labels: {
+                    color: textColor
+                }
+            }
+        },
+        scales: {
+            x: {
+                ticks: {
+                    color: textColorSecondary
+                },
+                grid: {
+                    color: surfaceBorder
+                }
+            },
+            y: {
+                ticks: {
+                    color: textColorSecondary
+                },
+                grid: {
+                    color: surfaceBorder
+                }
+            }
+        }
+    };
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const lineData = reactive({
     labels: ['Man / Woman', 'Coach / Users', 'Premium / Normal',],
     datasets: [
         {
             label: 'Dark Blue',
-            data: [2340, 300, 100, 81, 56, 55, 40],
+            data: [240, 300, 100, 81, 56, 55, 40],
             fill: false,
             backgroundColor: '#2f4860',
             borderColor: '#2f4860',
@@ -144,7 +263,7 @@ const lineData = reactive({
         },
         {
             label: 'Light Green',
-            data: [1890, 2000, 3100, 19, 86, 27, 100],
+            data: [190, 200, 310, 19, 86, 27, 100],
             fill: false,
             backgroundColor: '#00bb7e',
             borderColor: '#00bb7e',
@@ -152,25 +271,6 @@ const lineData = reactive({
         }
     ]
 });
-const usersinmonth = reactive({
-    labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'],
-    datasets: [
-        {
-            label: 'Premium',
-            data: [0, 14, 24, 20, 110, 100],
-            fill: false,
-            backgroundColor: '#2f4860',
-            borderColor: '#2f4860',
-            tension: 0.4
-        },
-        {
-            label: 'Normal',
-            data: [30, 50, 200, 420, 410, 419],
-            fill: false,
-            backgroundColor: '#00bb7e',
-            borderColor: '#00bb7e',
-            tension: 0.4
-        }
-    ]
-});
+
+
 </script>

@@ -14,6 +14,11 @@ const router = createRouter({
                     component: () => import('@/views/Dashboard.vue')
                 },
                 {
+                    path:'/uikit/premium',
+                    name:'premium',
+                    component:()=>import('@/views/premium.vue')
+                },
+                {
                     path:'/uikit/message',
                     name:'message',
                     component:()=> import('@/views/message.vue')

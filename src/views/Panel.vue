@@ -33,6 +33,7 @@ const toggle = () => {
 
 <template>
     <div class=" w-10 md:w-5 m-auto align-items-center mt-8">
+        <Dialog>d</Dialog>
         <!-- <div class="col-12">
             <div class="card">
                 <h5>Toolbar</h5>
