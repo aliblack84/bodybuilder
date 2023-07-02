@@ -1,3 +1,3 @@
-const getUrl = (route: string) => {
+export const getUrl = (route: string) => {
     return `http://localhost:38901${route}`
 }

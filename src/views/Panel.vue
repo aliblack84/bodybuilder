@@ -1,6 +1,7 @@
 <script setup>
+import { useToast } from 'primevue/usetoast';
 import { ref } from 'vue';
-
+import { login } from '../modules/authentication'
 const toolbarItems = ref([
     {
         label: 'Save',
@@ -19,6 +20,8 @@ const toolbarItems = ref([
         icon: 'pi pi-home'
     }
 ]);
+const toast = useToast();
+
 const cardMenu = ref([
     { label: 'Save', icon: 'pi pi-fw pi-check' },
     { label: 'Update', icon: 'pi pi-fw pi-refresh' },
@@ -33,7 +36,7 @@ const toggle = () => {
 
 <template>
     <div class=" w-10 md:w-5 m-auto align-items-center mt-8">
-        <Dialog>d</Dialog>
+        <Toast />
         <!-- <div class="col-12">
             <div class="card">
                 <h5>Toolbar</h5>
@@ -54,28 +57,28 @@ const toggle = () => {
                 </Toolbar>
             </div>
         </div> -->
-        
 
 
-            <div class="card ">
-                    <div class="align-items-center  ">
-                        <div class="p-fluid">
-                            <div class="field">
-                                <label for="username">Username</label>
-                                <InputText id="username" type="text" />
-                            </div>
-                            <div class="field">
-                                <label for="password">Password</label>
-                                <InputText id="password" type="password" />
-                            </div>
-                            <Button label="Login" class="mt-2"></Button>
-                        </div>
+
+        <div class="card ">
+            <div class="align-items-center  ">
+                <div class="p-fluid">
+                    <div class="field">
+                        <label for="username">Username</label>
+                        <InputText id="username" type="text" v-model="username" />
                     </div>
-
-              
-
+                    <div class="field">
+                        <label for="password">Password</label>
+                        <InputText id="password" type="password" v-model="password" />
+                    </div>
+                    <Button label="Login" class="mt-2" @click="submit()"></Button>
+                </div>
             </div>
-<!-- 
+
+
+
+        </div>
+        <!-- 
         <div class="col-12">
             <div class="card">
                 <h5>Splitter</h5>

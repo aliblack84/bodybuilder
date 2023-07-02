@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import AppLayout from '@/layout/AppLayout.vue';
+import { testAuth } from '../modules/authentication';
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -14,20 +15,20 @@ const router = createRouter({
                     component: () => import('@/views/Dashboard.vue')
                 },
                 {
-                    path:'/uikit/premium',
-                    name:'premium',
-                    component:()=>import('@/views/premium.vue')
+                    path: '/uikit/premium',
+                    name: 'premium',
+                    component: () => import('@/views/premium.vue')
                 },
                 {
-                    path:'/uikit/message',
-                    name:'message',
-                    component:()=> import('@/views/message.vue')
+                    path: '/uikit/message',
+                    name: 'message',
+                    component: () => import('@/views/message.vue')
 
                 },
                 {
-               path:'/uikit/chart',
-               name:'chart',
-              component :()=> import('@/views/chart.vue')
+                    path: '/uikit/chart',
+                    name: 'chart',
+                    component: () => import('@/views/chart.vue')
                 },
                 {
                     path: '/pages/crud',
@@ -46,7 +47,7 @@ const router = createRouter({
 
 
 
-     
+
                 {
                     path: '/uikit/formlayout',
                     name: 'formlayout',
@@ -62,8 +63,8 @@ const router = createRouter({
                     name: 'floatlabel',
                     component: () => import('@/views/uikit/FloatLabel.vue')
                 },
- 
-                
+
+
                 {
                     path: '/uikit/invalidstate',
                     name: 'invalidstate',
@@ -88,11 +89,6 @@ const router = createRouter({
                     path: '/uikit/tree',
                     name: 'tree',
                     component: () => import('@/views/uikit/Tree.vue')
-                },
-                {
-                    path: '/uikit/panel',
-                    name: 'panel',
-                    component: () => import('@/views/Panel.vue')
                 },
 
                 {
@@ -132,7 +128,7 @@ const router = createRouter({
                     name: 'messages',
                     component: () => import('@/views/uikit/Messages.vue')
                 },
-       
+
                 {
                     path: '/uikit/charts',
                     name: 'charts',
@@ -168,7 +164,7 @@ const router = createRouter({
                     name: 'empty',
                     component: () => import('@/views/pages/Empty.vue')
                 },
-   
+
                 {
                     path: '/documentation',
                     name: 'documentation',
@@ -204,5 +200,18 @@ const router = createRouter({
         }
     ]
 });
+
+router.beforeEach(async (to, from) => {
+    if (to.path === '/auth/login') {
+        return true
+    } else {
+        const result = await testAuth();
+        if (result.status === 401 || result.status === 403) {
+            router.push('/auth/login')
+        } else {
+            return true;
+        }
+    }
+})
 
 export default router;
