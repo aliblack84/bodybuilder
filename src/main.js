@@ -3,6 +3,7 @@ import App from './App.vue';
 import router from './router';
 
 import PrimeVue from 'primevue/config';
+
 import AutoComplete from 'primevue/autocomplete';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
