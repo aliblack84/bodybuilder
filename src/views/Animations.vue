@@ -1,12 +1,13 @@
-<script setup>
+<script setup lang="ts">
 import { FilterMatchMode } from 'primevue/api';
 import { ref, onMounted, onBeforeMount } from 'vue';
-import ProductService from '@/service/ProductService';
+import ProductService from '../service/ProductService';
+import { getAllCategories, getAllMovements, updateMovement, removeMovement } from '../modules/animation'
 import { useToast } from 'primevue/usetoast';
 
 const toast = useToast();
 
-const products = ref(null);
+const products = ref([]);
 const productDialog = ref(false);
 const deleteProductDialog = ref(false);
 const deleteProductsDialog = ref(false);
@@ -26,8 +27,20 @@ const productService = new ProductService();
 onBeforeMount(() => {
     initFilters();
 });
+const categories = ref([])
 onMounted(() => {
-    productService.getProducts().then((data) => (products.value = data));
+    // productService.getProducts().then((data) => (products.value = data));
+    getAllMovements().then((data) => {
+        if (data.status === 201) {
+            products.value = data.data;
+        }
+    });
+
+    getAllCategories().then((data) => {
+        if (data.status === 201) {
+            categories.value = data.data;
+        }
+    })
 });
 const formatCurrency = (value) => {
     return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
@@ -44,29 +57,35 @@ const hideDialog = () => {
     submitted.value = false;
 };
 
-const saveProduct = () => {
+const saveProduct = async () => {
     submitted.value = true;
-    if (product.value.name && product.value.name.trim() && product.value.price) {
-        if (product.value.id) {
-            product.value.inventoryStatus = product.value.inventoryStatus.value ? product.value.inventoryStatus.value : product.value.inventoryStatus;
-            products.value[findIndexById(product.value.id)] = product.value;
-            toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-        } else {
-            product.value.id = createId();
-            product.value.code = createId();
-            product.value.image = 'product-placeholder.svg';
-            product.value.inventoryStatus = product.value.inventoryStatus ? product.value.inventoryStatus.value : 'INSTOCK';
-            products.value.push(product.value);
-            toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
-        }
+    const result = await updateMovement(product.value._id, product.value.name ?? '', product.value.description ?? '', selectedCat.value, product.value.animationUrl ?? '');
+    if (result.status === 201) {
+        toast.add({ severity: 'success', summary: 'Successful', detail: 'Movement Updated', life: 3000 });
         productDialog.value = false;
         product.value = {};
+        getAllMovements().then((data) => {
+            if (data.status === 201) {
+                products.value = data.data;
+            }
+        });
+
+        getAllCategories().then((data) => {
+            if (data.status === 201) {
+                categories.value = data.data;
+            }
+        })
+    } else {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'An error occured', life: 3000 });
     }
 };
+
+const selectedCat = ref('')
 
 const editProduct = (editProduct) => {
     product.value = { ...editProduct };
     console.log(product);
+    selectedCat.value = editProduct.categoryId;
     productDialog.value = true;
 };
 
@@ -75,11 +94,29 @@ const confirmDeleteProduct = (editProduct) => {
     deleteProductDialog.value = true;
 };
 
-const deleteProduct = () => {
-    products.value = products.value.filter((val) => val.id !== product.value.id);
-    deleteProductDialog.value = false;
-    product.value = {};
-    toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+const deleteProduct = async () => {
+
+    const result = await removeMovement(product.value._id);
+
+    if (result.status === 201) {
+        deleteProductDialog.value = false;
+        product.value = {};
+        toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+        getAllMovements().then((data) => {
+            if (data.status === 201) {
+                products.value = data.data;
+            }
+        });
+
+        getAllCategories().then((data) => {
+            if (data.status === 201) {
+                categories.value = data.data;
+            }
+        })
+    } else {
+
+        toast.add({ severity: 'error', summary: 'Error', detail: 'An error occured', life: 3000 });
+    }
 };
 
 const findIndexById = (id) => {
@@ -142,19 +179,12 @@ const initFilters = () => {
                     </template>
                 </Toolbar> -->
 
-                <DataTable
-                    ref="dt"
-                    :value="products"
-                    v-model:selection="selectedProducts"
-                    dataKey="id"
-                    :paginator="true"
-                    :rows="10"
-                    :filters="filters"
+                <DataTable ref="dt" :value="products" v-model:selection="selectedProducts" dataKey="id" :paginator="true"
+                    :rows="10" :filters="filters"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
-                    responsiveLayout="scroll"
-                >
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} movements"
+                    responsiveLayout="scroll">
                     <template #header>
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                             <span class="block mt-2 md:mt-0 p-input-icon-left">
@@ -174,44 +204,50 @@ const initFilters = () => {
                     <Column header="Image" headerStyle="width:14%; min-width:10rem;">
                         <template #body="slotProps">
                             <span class="p-column-title">Image</span>
-                            <img :src="'demo/images/product/' + slotProps.data.image" :alt="slotProps.data.image" class="shadow-2" width="100" />
+                            <img :src="slotProps.data.animationUrl" :alt="slotProps.data.animationUrl" class="shadow-2"
+                                width="100" />
                         </template>
                     </Column>
-            
+
                     <Column field="category" header="Category" :sortable="true" headerStyle="width:14%; min-width:10rem;">
                         <template #body="slotProps">
                             <span class="p-column-title">Category</span>
                             {{ slotProps.data.category }}
                         </template>
                     </Column>
-<!--             
+                    <!--             
                     <Column field="inventoryStatus" header="Status" :sortable="true" headerStyle="width:14%; min-width:10rem;">
                         <template #body="slotProps">
                             <span class="p-column-title">Status</span>
                             <span :class="'product-badge status-' + (slotProps.data.inventoryStatus ? slotProps.data.inventoryStatus.toLowerCase() : '')">{{ slotProps.data.inventoryStatus }}</span>
                         </template>
                     </Column> -->
-                <div class="w-8"></div>
+                    <div class="w-8"></div>
                     <Column headerStyle="min-width:10rem;">
                         <template #body="slotProps">
-                            <Button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" @click="editProduct(slotProps.data)" />
-                            <Button icon="pi pi-trash" class="p-button-rounded p-button-warning mt-2" @click="confirmDeleteProduct(slotProps.data)" />
+                            <Button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                                @click="editProduct(slotProps.data)" />
+                            <Button icon="pi pi-trash" class="p-button-rounded p-button-warning mt-2"
+                                @click="confirmDeleteProduct(slotProps.data)" />
                         </template>
                     </Column>
                 </DataTable>
 
-                <Dialog v-model:visible="productDialog" :style="{ width: '450px' }" header="Product Details" :modal="true" class="p-fluid">
-                    <img :src="'demo/images/product/' + product.image" :alt="product.image" v-if="product.image" width="150" class="mt-0 mx-auto mb-5 block shadow-2" />
+                <Dialog v-model:visible="productDialog" :style="{ width: '450px' }" header="Product Details" :modal="true"
+                    class="p-fluid">
+                    <img :src="'demo/images/product/' + product.image" :alt="product.image" v-if="product.image" width="150"
+                        class="mt-0 mx-auto mb-5 block shadow-2" />
                     <div class="field">
                         <label for="name">Name</label>
-                        <InputText id="name" v-model.trim="product.name" required="true" autofocus :class="{ 'p-invalid': submitted && !product.name }" />
+                        <InputText id="name" v-model.trim="product.name" required="true" autofocus
+                            :class="{ 'p-invalid': submitted && !product.name }" />
                         <small class="p-invalid" v-if="submitted && !product.name">Name is required.</small>
                     </div>
                     <div class="field">
                         <label for="description">Description</label>
                         <Textarea id="description" v-model="product.description" required="true" rows="3" cols="20" />
                     </div>
-<!-- 
+                    <!-- 
                     <div class="field">
                         <label for="inventoryStatus" class="mb-3">Inventory Status</label>
                         <Dropdown id="inventoryStatus" v-model="product.inventoryStatus" :options="statuses" optionLabel="label" placeholder="Select a Status">
@@ -232,25 +268,13 @@ const initFilters = () => {
                     <div class="field">
                         <label class="mb-3">Category</label>
                         <div class="formgrid grid">
-                            <div class="field-radiobutton col-6">
-                                <RadioButton id="category1" name="category" value="Accessories" v-model="product.category" />
-                                <label for="category1">Accessories</label>
-                            </div>
-                            <div class="field-radiobutton col-6">
-                                <RadioButton id="category2" name="category" value="Clothing" v-model="product.category" />
-                                <label for="category2">Clothing</label>
-                            </div>
-                            <div class="field-radiobutton col-6">
-                                <RadioButton id="category3" name="category" value="Electronics" v-model="product.category" />
-                                <label for="category3">Electronics</label>
-                            </div>
-                            <div class="field-radiobutton col-6">
-                                <RadioButton id="category4" name="category" value="Fitness" v-model="product.category" />
-                                <label for="category4">Fitness</label>
+                            <div class="field-radiobutton col-6" v-for="cat in categories">
+                                <RadioButton id="category1" name="category" :value="cat._id" v-model="selectedCat" />
+                                <label for="category1">{{ cat.name }}</label>
                             </div>
                         </div>
                     </div>
-<!-- 
+                    <!-- 
                     <div class="formgrid grid">
                         <div class="field col">
                             <label for="price">Price</label>
@@ -271,10 +295,7 @@ const initFilters = () => {
                 <Dialog v-model:visible="deleteProductDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">
                     <div class="flex align-items-center justify-content-center">
                         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-                        <span v-if="product"
-                            >Are you sure you want to delete <b>{{ product.name }}</b
-                            >?</span
-                        >
+                        <span v-if="product">Are you sure you want to delete <b>{{ product.name }}</b>?</span>
                     </div>
                     <template #footer>
                         <Button label="No" icon="pi pi-times" class="p-button-text" @click="deleteProductDialog = false" />
