@@ -39,23 +39,11 @@ const model = ref([
     // },
     {
         items: [
-            // { label: 'Free Blocks', icon: 'pi pi-fw pi-eye', to: '/blocks', badge: 'NEW' },
-            // { label: 'All Blocks', icon: 'pi pi-fw pi-globe', url: 'https://www.primefaces.org/primeblocks-vue', target: '_blank' }
         ]
     },
     {
         items: [
-            // { label: 'PrimeIcons', icon: 'pi pi-fw pi-prime', to: '/utilities/icons' },
-            // { label: 'PrimeFlex', icon: 'pi pi-fw pi-desktop', url: 'https://www.primefaces.org/primeflex/', target: '_blank' }
-        ]
-    },
-    {
-        items: [
-            // {
-            //     label: 'Landing',
-            //     icon: 'pi pi-fw pi-globe',
-            //     to: '/landing'
-            // },
+    
             {
                 label: 'Auth',
                 icon: 'pi pi-fw pi-user',
@@ -77,90 +65,14 @@ const model = ref([
                     }
                 ]
             },
-            // {
-            //     label: 'Crud',
-            //     icon: 'pi pi-fw pi-pencil',
-            //     to: '/pages/cruds'
-            // },
-            // {
-            //     label: 'Timeline',
-            //     icon: 'pi pi-fw pi-calendar',
-            //     to: '/pages/timeline'
-            // },
-            // {
-            //     label: 'Not Found',
-            //     icon: 'pi pi-fw pi-exclamation-circle',
-            //     to: '/pages/notfound'
-            // },
-            // {
-            //     label: 'Empty',
-            //     icon: 'pi pi-fw pi-circle-off',
-            //     to: '/pages/empty'
-            // }
+
         ]
     },
     {
-        // items: [
-        //     {
-        //         label: 'Submenu 1',
-        //         icon: 'pi pi-fw pi-bookmark',
-        //         items: [
-        //             {
-        //                 label: 'Submenu 1.1',
-        //                 icon: 'pi pi-fw pi-bookmark',
-        //                 items: [
-        //                     { label: 'Submenu 1.1.1', icon: 'pi pi-fw pi-bookmark' },
-        //                     { label: 'Submenu 1.1.2', icon: 'pi pi-fw pi-bookmark' },
-        //                     { label: 'Submenu 1.1.3', icon: 'pi pi-fw pi-bookmark' }
-        //                 ]
-        //             },
-        //             {
-        //                 label: 'Submenu 1.2',
-        //                 icon: 'pi pi-fw pi-bookmark',
-        //                 items: [{ label: 'Submenu 1.2.1', icon: 'pi pi-fw pi-bookmark' }]
-        //             }
-        //         ]
-        //     },
-        //     {
-        //         label: 'Submenu 2',
-        //         icon: 'pi pi-fw pi-bookmark',
-        //         items: [
-        //             {
-        //                 label: 'Submenu 2.1',
-        //                 icon: 'pi pi-fw pi-bookmark',
-        //                 items: [
-        //                     { label: 'Submenu 2.1.1', icon: 'pi pi-fw pi-bookmark' },
-        //                     { label: 'Submenu 2.1.2', icon: 'pi pi-fw pi-bookmark' }
-        //                 ]
-        //             },
-        //             {
-        //                 label: 'Submenu 2.2',
-        //                 icon: 'pi pi-fw pi-bookmark',
-        //                 items: [{ label: 'Submenu 2.2.1', icon: 'pi pi-fw pi-bookmark' }]
-        //             }
-        //         ]
-        //     }
-        // ]
+
     },
     {
-        // items: [
-        //     {
-        //         label: 'Documentation',
-        //         icon: 'pi pi-fw pi-question',
-        //         to: '/documentation'
-        //     },
-        //     {
-        //         label: 'View Source',
-        //         icon: 'pi pi-fw pi-search',
-        //         url: 'https://github.com/primefaces/sakai-vue',
-        //         target: '_blank'
-        //     },
-        //     {
-        //         label: 'Nuxt Version',
-        //         url: 'https://github.com/primefaces/sakai-nuxt',
-        //         icon: 'pi pi-fw pi-star'
-        //     }
-        // ]
+
     }
 ]);
 </script>

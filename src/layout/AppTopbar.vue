@@ -4,10 +4,12 @@ import { useLayout } from '@/layout/composables/layout';
 import { useRouter } from 'vue-router';
 
 const { layoutConfig, onMenuToggle } = useLayout();
-
 const outsideClickListener = ref(null);
 const topbarMenuActive = ref(false);
+const date = ref();
 const router = useRouter();
+const password = ref(false);
+const visible = ref(false);
 
 onMounted(() => {
     bindOutsideClickListener();
@@ -21,13 +23,16 @@ const logoUrl = computed(() => {
     return `layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.svg`;
 });
 
+
 const onTopBarMenuButton = () => {
     topbarMenuActive.value = !topbarMenuActive.value;
 };
+
 const onSettingsClick = () => {
     topbarMenuActive.value = false;
     router.push('/documentation');
 };
+
 const topbarMenuClasses = computed(() => {
     return {
         'layout-topbar-menu-mobile-active': topbarMenuActive.value
@@ -50,6 +55,7 @@ const unbindOutsideClickListener = () => {
         outsideClickListener.value = null;
     }
 };
+
 const isOutsideClicked = (event) => {
     if (!topbarMenuActive.value) return;
 
@@ -58,6 +64,7 @@ const isOutsideClicked = (event) => {
 
     return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
 };
+
 </script>
 
 <template>
@@ -65,29 +72,36 @@ const isOutsideClicked = (event) => {
         <router-link to="/" class="layout-topbar-logo">
             <img :src="logoUrl" alt="logo" />
             <span>Admin</span>
+            
         </router-link>
-<!-- 
-        <button class="p-link layout-menu-button layout-topbar-button" @click="onMenuToggle()">
-            <i class="pi pi-bars"></i>
-        </button> -->
 
         <button class="p-link layout-topbar-menu-button layout-topbar-button" @click="onTopBarMenuButton()">
             <i class="pi pi-ellipsis-v"></i>
         </button>
 
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
-            <button @click="onTopBarMenuButton()" class="p-link layout-topbar-button">
-                <i class="pi pi-calendar"></i>
-                <span>Calendar</span>
-            </button>
-            <button @click="onTopBarMenuButton()" class="p-link layout-topbar-button">
-                <i class="pi pi-user"></i>
-                <span>Profile</span>
-            </button>
-            <!-- <button @click="onSettingsClick()" class="p-link layout-topbar-button">
-                <i class="pi pi-cog"></i>
-                <span>Settings</span>
-            </button> -->
+                      
+           
+<Dialog v-model:password="password"  modal :style="{ width: '50vw' }" >
+    <h2>password</h2>
+    <InputText type="text" v-model="value" />
+</Dialog>  
+
+
+
+<Calendar  v-model="date" showIcon />  
+            <div class="w-1 h-1"></div>
+<Button icon="pi pi-user" @click="visible = true" />
+<Dialog v-model:visible="visible"   modal :style="{ width: '50vw' }">
+ <p style="font-size:larger;">   Write!   </p>  
+ <Button style="float: right;" label="change password"  @click="password = true" />
+ 
+
+
+</Dialog>
+
+
+
         </div>
     </div>
 </template>
