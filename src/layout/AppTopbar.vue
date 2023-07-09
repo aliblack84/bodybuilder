@@ -10,9 +10,12 @@ const date = ref();
 const router = useRouter();
 const password = ref(false);
 const visible = ref(false);
+const nodes = ref([
+]);
 
 onMounted(() => {
     bindOutsideClickListener();
+    
 });
 
 onBeforeUnmount(() => {
@@ -89,21 +92,32 @@ const isOutsideClicked = (event) => {
 
 
 
-<Calendar  v-model="date" showIcon />  
-            <div class="w-1 h-1"></div>
+<p style="font-size: x-large;margin: auto; margin-right: 20px;">2023/5/8</p>
 <Button icon="pi pi-user" @click="visible = true" />
 <Dialog v-model:visible="visible"   modal :style="{ width: '50vw' }">
- <p style="font-size:larger;">   Write!   </p>  
- <Button style="float: right;" label="change password"  @click="password = true" />
  
-
-
+ <!-- <table style="margin: auto;width: 70%;" border="1">
+<tr style="margin: auto;">
+    <td>Work</td>   <td>Date</td>
+    
+</tr>
+<tr v-for="text in texts">
+    <td>{{ text.work }}</td> <td>{{ text.date }}</td>
+</tr>
+ </table>
+ <br>
+ <br> -->
+ <div class="card">
+        <TreeTable :value="nodes" :paginator="true" :rows="5" :rowsPerPageOptions="[5, 10, 25]">
+            <Column field="Work" header="Work" expander></Column>
+            <Column field="Date" header="Date"></Column>
+        </TreeTable>
+    </div>
+ <Button style="float: right;" label="change password"  @click="password = true" />
 </Dialog>
-
-
-
         </div>
     </div>
+    
 </template>
 
 <style lang="scss" scoped></style>

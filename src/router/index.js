@@ -15,6 +15,11 @@ const router = createRouter({
                     component: () => import('@/views/Dashboard.vue')
                 },
                 {
+                    path: "/uikit/profileDialog",
+                    name: "profileDialog",
+                    component: () => import('@/views/profileDialog.vue')
+                },
+                {
                     path: '/uikit/premium',
                     name: 'premium',
                     component: () => import('@/views/premium.vue')
