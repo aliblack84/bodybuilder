@@ -12,7 +12,9 @@ const model = ref([
         { label: 'Upload', icon: 'pi pi-upload', to: '/uikit/file' },
         {label:'Animations' , icon :'pi pi-images' , to:'/pages/Crud'},
         {label:"messages" , icon:"pi pi-fw pi-comment" ,to:'/uikit/message'},
-        {label:"premium requests" , icon:"pi pi-fw pi-shield" ,to:'/uikit/premium'}
+        {label:"premium requests" , icon:"pi pi-fw pi-shield" ,to:'/uikit/premium'},
+        {label:"profile dialog" , icon:"" ,to:'/uikit/profileDialog'}
+
 
     ]
 
