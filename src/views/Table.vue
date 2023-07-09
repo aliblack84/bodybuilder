@@ -2,7 +2,8 @@
 import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import CustomerService from '@/service/CustomerService';
 import ProductService from '@/service/ProductService';
-import { ref, onBeforeMount } from 'vue';
+import { ref, onBeforeMount, onMounted, watch } from 'vue';
+import { getUsers } from '../modules/users'
 const open = ref(false)
 const customer1 = ref(null);
 const customer2 = ref(null);
@@ -30,29 +31,13 @@ const representatives = ref([
 const customerService = new CustomerService();
 const productService = new ProductService();
 
-onBeforeMount(() => {
-    productService.getProductsWithOrdersSmall().then((data) => (products.value = data));
-    customerService.getCustomersLarge().then((data) => {
-        customer1.value = data;
-        loading1.value = false;
-        customer1.value.forEach((customer) => (customer.date = new Date(customer.date)));
-    });
-    customerService.getCustomersLarge().then((data) => (customer2.value = data));
-    customerService.getCustomersMedium().then((data) => (customer3.value = data));
-    loading2.value = false;
-
-    initFilters1();
-});
 
 const initFilters1 = () => {
     filters1.value = {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         name: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-        'country.name': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-        representative: { value: null, matchMode: FilterMatchMode.IN },
+        country: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
         date: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
-        status: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
-        activity: { value: [0, 50], matchMode: FilterMatchMode.BETWEEN },
         verified: { value: null, matchMode: FilterMatchMode.EQUALS }
     };
 };
@@ -71,11 +56,10 @@ const formatCurrency = (value) => {
 };
 
 const formatDate = (value) => {
-    return value.toLocaleDateString('en-US', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-    });
+    const date = new Date(value)
+
+
+    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${date.getMinutes()}`
 };
 const calculateCustomerTotal = (name) => {
     let total = 0;
@@ -89,32 +73,119 @@ const calculateCustomerTotal = (name) => {
 
     return total;
 };
+
+// Code added by Hadi
+
+const filtered = ref([])
+const users = ref([])
+
+const preStatus = ref('all')
+const role = ref('all')
+const gender = ref('all')
+
+onBeforeMount(() => {
+    getUsers().then((allUsers) => {
+
+        users.value = allUsers.data;
+        filtered.value = allUsers.data;
+        loading1.value = false;
+        console.log(filtered.value);
+    })
+
+
+    initFilters1()
+})
+
+const update = () => {
+    filtered.value = []
+
+    if (preStatus.value === 'all' && role.value === 'all' && gender.value === 'all') {
+        filtered.value = users.value;
+        return;
+    }
+    users.value.map((user) => {
+        let shouldAdded = false;
+        const uGen = user.gender === 'male'? 'men' : 'women'
+        const pStatus = user.preStatus.stat === 3? 'premium' : 'normal'
+        if ((uGen === gender.value || gender.value === 'all') && (user.role === role.value || role.value === 'all') &&  (pStatus === preStatus.value || preStatus.value === 'all')) {
+            filtered.value.push(user)
+        }
+    })
+}
+
+watch(preStatus, (value) => {
+    update()
+})
+watch(role, (value) => {
+    update()
+})
+watch(gender, (value) => {
+    update()
+})
+
 </script>
 
 <template>
     <div class="grid">
         <div class="col-12">
+
+            <div class="card flex flex-wrap justify-content-center gap-4">
+                <div class="flex align-items-center">
+                    <RadioButton v-model="preStatus" inputId="ingredient1" name="pizza" value="normal" />
+                    <label for="ingredient1" class="ml-2"> Normals </label>
+                </div>
+                <div class="flex align-items-center">
+                    <RadioButton v-model="preStatus" inputId="ingredient2" name="pizza" value="premium" />
+                    <label for="ingredient2" class="ml-2"> Premiums </label>
+                </div>
+                <div class="flex align-items-center">
+                    <RadioButton v-model="preStatus" inputId="ingredient2" name="pizza" value="all" />
+                    <label for="ingredient2" class="ml-2"> All </label>
+                </div>
+
+            </div>
+            <div class="card flex flex-wrap justify-content-center gap-4">
+                <div class="flex align-items-center">
+                    <RadioButton v-model="role" inputId="ingredient1" name="pizza" value="athlete" />
+                    <label for="ingredient1" class="ml-2"> Athletes </label>
+                </div>
+                <div class="flex align-items-center">
+                    <RadioButton v-model="role" inputId="ingredient2" name="pizza" value="coach" />
+                    <label for="ingredient2" class="ml-2"> Coaches </label>
+                </div>
+                <div class="flex align-items-center">
+                    <RadioButton v-model="role" inputId="ingredient2" name="pizza" value="all" />
+                    <label for="ingredient2" class="ml-2"> All </label>
+                </div>
+                
+            </div>
+            <div class="card flex flex-wrap justify-content-center gap-4">
+                <div class="flex align-items-center">
+                    <RadioButton v-model="gender" inputId="ingredient1" name="pizza" value="men" />
+                    <label for="ingredient1" class="ml-2"> Men </label>
+                </div>
+                <div class="flex align-items-center">
+                    <RadioButton v-model="gender" inputId="ingredient2" name="pizza" value="women" />
+                    <label for="ingredient2" class="ml-2"> Women </label>
+                </div>
+                <div class="flex align-items-center">
+                    <RadioButton v-model="gender" inputId="ingredient2" name="pizza" value="all" />
+                    <label for="ingredient2" class="ml-2"> All </label>
+                </div>
+                
+            </div>
             <div class="card">
                 <h5>Users</h5>
-                <DataTable
-                    :value="customer1"
-                    :paginator="true"
-                    class="p-datatable-gridlines"
-                    :rows="10"
-                    dataKey="id"
-                    :rowHover="true"
-                    v-model:filters="filters1"
-                    filterDisplay="menu"
-                    :loading="loading1"
-                    :filters="filters1"
+                <DataTable :value="filtered" :paginator="true" class="p-datatable-gridlines" :rows="10" dataKey="id"
+                    :rowHover="true" filterDisplay="menu" :loading="loading1" v-model:filters="filters1" :filters="filters1"
                     responsiveLayout="scroll"
-                    :globalFilterFields="['name', 'country.name', 'representative.name', 'status']"
-                >
+                    :globalFilterFields="['name', 'country.name', 'representative.name', 'status']">
                     <template #header>
                         <div class="flex justify-content-between flex-column sm:flex-row">
                             <span class="p-input-icon-left mb-2">
                                 <i class="pi pi-search" />
-                                <InputText v-model="filters1['global'].value" placeholder="Keyword Search" style="width: 100%" />
+                                <InputText v-model="filters1['global'].value" placeholder="Keyword Search"
+                                    style="width: 100%" />
                             </span>
                         </div>
                     </template>
@@ -122,134 +193,62 @@ const calculateCustomerTotal = (name) => {
                     <template #loading> Loading customers data. Please wait. </template>
                     <Column field="name" header="Name" style="min-width: 12rem">
                         <template #body="{ data }">
-                            {{ data.name }}
+                            {{ data.name }} {{ data.lastName }}
                         </template>
                         <template #filter="{ filterModel }">
-                            <InputText type="text" v-model="filterModel.value" class="p-column-filter" placeholder="Search by name" />
+                            <InputText type="text" v-model="filterModel.value" class="p-column-filter"
+                                placeholder="Search by name" />
                         </template>
                     </Column>
-                    <Dialog v-model:open="open"   header="Message" :style="{ width: '50vw' }">
- <p>   difudfhduhfudcbducubc </p>  
- <Button style="float: right;" label="Sent to Email" icon="pi pi-link" @click="open = true" />
+                    <Dialog v-model:open="open" header="Message" :style="{ width: '50vw' }">
+                        <p> difudfhduhfudcbducubc </p>
+                        <Button style="float: right;" label="Sent to Email" icon="pi pi-link" @click="open = true" />
 
-</Dialog>    
-                    <Column header="Country" filterField="country.name" style="min-width: 12rem">
+                    </Dialog>
+                    <Column header="Country" filterField="country" style="min-width: 12rem">
                         <template #body="{ data }">
-                            <img src="/demo/images/flag/flag_placeholder.png" :alt="data.country.name" :class="'flag flag-' + data.country.code" width="30" />
-                            <span style="margin-left: 0.5em; vertical-align: middle" class="image-text">{{ data.country.name }}</span>
+                            <img :src="data.flagUrl" :alt="data.country" :class="'flag flag-' + data.country.code"
+                                width="30" />
+                            <span style="margin-left: 0.5em; vertical-align: middle" class="image-text">{{ data.countryName
+                            }}</span>
                         </template>
                         <template #filter="{ filterModel }">
-                            <InputText type="text" v-model="filterModel.value" class="p-column-filter" placeholder="Search by country" />
+                            <InputText type="text" v-model="filterModel.value" class="p-column-filter"
+                                placeholder="Search by country" />
                         </template>
                         <template #filterclear="{ filterCallback }">
-                            <Button type="button" icon="pi pi-times" @click="filterCallback()" class="p-button-secondary"></Button>
+                            <Button type="button" icon="pi pi-times" @click="filterCallback()"
+                                class="p-button-secondary"></Button>
                         </template>
                         <template #filterapply="{ filterCallback }">
-                            <Button type="button" icon="pi pi-check" @click="filterCallback()" class="p-button-success"></Button>
+                            <Button type="button" icon="pi pi-check" @click="filterCallback()"
+                                class="p-button-success"></Button>
                         </template>
                     </Column>
-                    
+
                     <Column header="Date" filterField="date" dataType="date" style="min-width: 10rem">
                         <template #body="{ data }">
-                            {{ formatDate(data.date) }}
+                            {{ formatDate(data.createdDate) }}
                         </template>
                         <template #filter="{ filterModel }">
                             <Calendar v-model="filterModel.value" dateFormat="mm/dd/yy" placeholder="mm/dd/yyyy" />
                         </template>
                     </Column>
-                <Column field="Premium" header="Premium" dataType="boolean" bodyClass="text-center" style="min-width: 8rem">
+                    <Column field="Premium" header="Premium" dataType="boolean" bodyClass="text-center"
+                        style="min-width: 8rem">
                         <template #body="{ data }">
-                            <i class="pi" :class="{ 'text-green-500 pi-check-circle': data.verified, 'text-pink-500 pi-times-circle': !data.verified }"></i>
+                            <span>{{ data.preStatus.data.text }}</span>
                         </template>
                         <template #filter="{ filterModel }">
                             <TriStateCheckbox v-model="filterModel.value" />
                         </template>
                     </Column>
-  
-          
+
+
                 </DataTable>
             </div>
         </div>
 
-
-        <div class="col-12">
-            <div class="card">
-                <h5>Coach-users</h5>
-                <DataTable
-                    :value="customer1"
-                    :paginator="true"
-                    class="p-datatable-gridlines"
-                    :rows="10"
-                    dataKey="id"
-                    :rowHover="true"
-                    v-model:filters="filters1"
-                    filterDisplay="menu"
-                    :loading="loading1"
-                    :filters="filters1"
-                    responsiveLayout="scroll"
-                    :globalFilterFields="['name', 'country.name', 'representative.name', 'status']"
-                >
-                    <template #header>
-                        <div class="flex justify-content-between flex-column sm:flex-row">
-                            <span class="p-input-icon-left mb-2">
-                                <i class="pi pi-search" />
-                                <InputText v-model="filters1['global'].value" placeholder="Keyword Search" style="width: 100%" />
-                            </span>
-                        </div>
-                    </template>
-                    <template #empty> No customers found. </template>
-                    <template #loading> Loading customers data. Please wait. </template>
-                    <Column  field="name" header="Name" style="min-width: 12rem">
-                        <template #body="{ data }">
-                            {{ data.name }}
-                        </template>
-                        <template #filter="{ filterModel }">
-                            <InputText type="text" v-model="filterModel.value" class="p-column-filter" placeholder="Search by name" />
-                        </template>
-                    </Column>
-                <Column header="Country" filterField="country.name" style="min-width: 12rem">
-                        <template #body="{ data }">
-                            <img src="/demo/images/flag/flag_placeholder.png" :alt="data.country.name" :class="'flag flag-' + data.country.code" width="30" />
-                            <span style="margin-left: 0.5em; vertical-align: middle" class="image-text">{{ data.country.name }}</span>
-                        </template>
-                        <template #filter="{ filterModel }">
-                            <InputText type="text" v-model="filterModel.value" class="p-column-filter" placeholder="Search by country" />
-                        </template>
-                        <template #filterclear="{ filterCallback }">
-                            <Button type="button" icon="pi pi-times" @click="filterCallback()" class="p-button-secondary"></Button>
-                        </template>
-                        <template #filterapply="{ filterCallback }">
-                            <Button type="button" icon="pi pi-check" @click="filterCallback()" class="p-button-success"></Button>
-                        </template>
-                 
-                    </Column>
-                    
-                    <Column header="Date" filterField="date" dataType="date" style="min-width: 10rem">
-                        <template #body="{ data }">
-                            {{ formatDate(data.date) }}
-                        </template>
-                        <template #filter="{ filterModel }">
-                            <Calendar v-model="filterModel.value" dateFormat="mm/dd/yy" placeholder="mm/dd/yyyy" />
-                        </template>
-                    </Column>
-                    <Column field="Score" header="Score" :sortable="true">
-                        <template #body="slotProps">
-                            <Rating :modelValue="slotProps.data.rating" :readonly="true" :cancel="false" />
-                        </template>
-                    </Column>
-                <Column field="Premium" header="Premium" dataType="boolean" bodyClass="text-center" style="min-width: 8rem">
-                        <template #body="{ data }">
-                            <i class="pi" :class="{ 'text-green-500 pi-check-circle': data.verified, 'text-pink-500 pi-times-circle': !data.verified }"></i>
-                        </template>
-                        <template #filter="{ filterModel }">
-                            <TriStateCheckbox v-model="filterModel.value" />
-                        </template>
-                    </Column>
-            
-          
-                </DataTable>
-            </div>
-        </div>
         <!-- <div class="col-12">
             <div class="card ">
                 <h5>Coach users</h5>

@@ -12,3 +12,15 @@ export const getUsersData = async () => {
         return error.response;
     }
 }
+
+export const getUsers = async () => {
+    try {
+        return await axios.post(getUrl('/user/all'), {}, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('jwtToken')}`
+            }
+        })
+    } catch (error) {
+        return error.response;
+    }
+}

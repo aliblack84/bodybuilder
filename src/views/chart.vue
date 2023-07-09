@@ -1,5 +1,5 @@
 <template>
-    <Button label="Print" icon="pi pi-print" style="width: 110px;  " />
+    <Button label="Print" @click="printAll()" icon="pi pi-print" style="width: 110px;  " />
     <hr>
     <div class="grid p-fluid ">
 
@@ -145,6 +145,10 @@ const premiumUsers = ref(0)
 const normalUsers = ref(0)
 const coachUsers = ref(0)
 const athleteUsers = ref(0)
+
+const printAll = () => {
+    print()
+}
 
 onMounted(async () => {
     const result = await getUsersData();
