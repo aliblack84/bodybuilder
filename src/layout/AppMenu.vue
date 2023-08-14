@@ -7,14 +7,14 @@ const model = ref([
     {
         label: 'Home',
         items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' },
-        { label: 'Users', icon: 'pi pi-fw pi-table', to: '/uikit/table' },
-        // { label: 'Panel', icon: 'pi pi-fw pi-tablet', to: '/uikit/panel' },
-        { label: 'Chart menu', icon: 'pi pi-fw pi-chart-bar', to: '/uikit/chart' },
-        { label: 'Upload', icon: 'pi pi-upload', to: '/uikit/file' },
+        { label: 'Users', icon: 'pi pi-fw pi-table', to: '/users' },
+        // { label: 'Panel', icon: 'pi pi-fw pi-tablet', to: '/panel' },
+        { label: 'Chart menu', icon: 'pi pi-fw pi-chart-bar', to: '/chart' },
+        { label: 'Upload', icon: 'pi pi-upload', to: '/file' },
         {label:'Animations' , icon :'pi pi-images' , to:'/pages/Crud'},
-        {label:"messages" , icon:"pi pi-fw pi-comment" ,to:'/uikit/message'},
-        {label:"premium requests" , icon:"pi pi-fw pi-shield" ,to:'/uikit/premium'},
-        {label:"profile dialog" , icon:"" ,to:'/uikit/profileDialog'}
+        {label:"messages" , icon:"pi pi-fw pi-comment" ,to:'/message'},
+        {label:"premium requests" , icon:"pi pi-fw pi-shield" ,to:'/premium'},
+        {label:"profile dialog" , icon:"" ,to:'/profileDialog'}
 
 
     ]
@@ -23,20 +23,20 @@ const model = ref([
     // {
     //     label: 'UI Components',
     //     items: [
-    //         { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', to: '/uikit/formlayout' },
-    //         { label: 'Input', icon: 'pi pi-fw pi-check-square', to: '/uikit/input' },
-    //         { label: 'Float Label', icon: 'pi pi-fw pi-bookmark', to: '/uikit/floatlabel' },
-    //         { label: 'Invalid State', icon: 'pi pi-fw pi-exclamation-circle', to: '/uikit/invalidstate' },
-    //         { label: 'Button', icon: 'pi pi-fw pi-mobile', to: '/uikit/button', class: 'rotated-icon' },
-    //         { label: 'List', icon: 'pi pi-fw pi-list', to: '/uikit/list' },
-    //         { label: 'Tree', icon: 'pi pi-fw pi-share-alt', to: '/uikit/tree' },
-    //         { label: 'Overlay', icon: 'pi pi-fw pi-clone', to: '/uikit/overlay' },
-    //         { label: 'Media', icon: 'pi pi-fw pi-image', to: '/uikit/media' },
+    //         { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', to: '/formlayout' },
+    //         { label: 'Input', icon: 'pi pi-fw pi-check-square', to: '/input' },
+    //         { label: 'Float Label', icon: 'pi pi-fw pi-bookmark', to: '/floatlabel' },
+    //         { label: 'Invalid State', icon: 'pi pi-fw pi-exclamation-circle', to: '/invalidstate' },
+    //         { label: 'Button', icon: 'pi pi-fw pi-mobile', to: '/button', class: 'rotated-icon' },
+    //         { label: 'List', icon: 'pi pi-fw pi-list', to: '/list' },
+    //         { label: 'Tree', icon: 'pi pi-fw pi-share-alt', to: '/tree' },
+    //         { label: 'Overlay', icon: 'pi pi-fw pi-clone', to: '/overlay' },
+    //         { label: 'Media', icon: 'pi pi-fw pi-image', to: '/media' },
 
-    //         { label: 'Menu', icon: 'pi pi-fw pi-bars', to: '/uikit/menu', preventExact: true },
-    //         { label: 'Message', icon: 'pi pi-fw pi-comment', to: '/uikit/messages' },
-    //         { label: 'Chart', icon: 'pi pi-fw pi-chart-bar', to: '/uikit/charts' },
-    //         { label: 'Misc', icon: 'pi pi-fw pi-circle', to: '/uikit/misc' }
+    //         { label: 'Menu', icon: 'pi pi-fw pi-bars', to: '/menu', preventExact: true },
+    //         { label: 'Message', icon: 'pi pi-fw pi-comment', to: '/messages' },
+    //         { label: 'Chart', icon: 'pi pi-fw pi-chart-bar', to: '/charts' },
+    //         { label: 'Misc', icon: 'pi pi-fw pi-circle', to: '/misc' }
     //     ]
     // },
     {

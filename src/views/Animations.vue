@@ -101,7 +101,7 @@ const deleteProduct = async () => {
     if (result.status === 201) {
         deleteProductDialog.value = false;
         product.value = {};
-        toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+        toast.add({ severity: 'success', summary: 'Successful', detail: 'Movement Deleted', life: 3000 });
         getAllMovements().then((data) => {
             if (data.status === 201) {
                 products.value = data.data;
@@ -193,14 +193,6 @@ const initFilters = () => {
                             </span>
                         </div>
                     </template>
-
-                    <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
-                    <Column field="name" header="Name" :sortable="true" headerStyle="width:14%; min-width:10rem;">
-                        <template #body="slotProps">
-                            <span class="p-column-title">Name</span>
-                            {{ slotProps.data.name }}
-                        </template>
-                    </Column>
                     <Column header="Image" headerStyle="width:14%; min-width:10rem;">
                         <template #body="slotProps">
                             <span class="p-column-title">Image</span>
@@ -208,11 +200,24 @@ const initFilters = () => {
                                 width="100" />
                         </template>
                     </Column>
+                    <Column field="name" header="Name" :sortable="true" headerStyle="width:14%; min-width:10rem;">
+                        <template #body="slotProps">
+                            <span class="p-column-title">Name</span>
+                            {{ slotProps.data.name }}
+                        </template>
+                    </Column>
+                    
 
                     <Column field="category" header="Category" :sortable="true" headerStyle="width:14%; min-width:10rem;">
                         <template #body="slotProps">
                             <span class="p-column-title">Category</span>
                             {{ slotProps.data.category }}
+                        </template>
+                    </Column>
+                    <Column field="description" header="Description" :sortable="true" headerStyle="width:14%; min-width:10rem;">
+                        <template #body="slotProps">
+                            <span class="p-column-title">Description</span>
+                            {{ slotProps.data.description }}
                         </template>
                     </Column>
                     <!--             

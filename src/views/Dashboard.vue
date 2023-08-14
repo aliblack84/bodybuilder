@@ -2,10 +2,12 @@
 import { onMounted, reactive, ref, watch } from 'vue';
 import ProductService from '@/service/ProductService';
 import { useLayout } from '@/layout/composables/layout';
-
+import { getOnlineUsers, getLogs } from '../modules/users'
 const { isDarkTheme } = useLayout();
 
 const products = ref(null);
+
+const logs = ref([])
 
 const items = ref([
     { label: 'Add New', icon: 'pi pi-fw pi-plus' },
@@ -14,8 +16,17 @@ const items = ref([
 const lineOptions = ref(null);
 const productService = new ProductService();
 
-onMounted(() => {
-    productService.getProductsSmall().then((data) => (products.value = data));
+onMounted(async() => {
+    console.log(getOnlineUsers);
+    const result = await getOnlineUsers()
+
+    console.log(result);
+    products.value = result.data
+
+    const result2 = await getLogs()
+
+    console.log(result2);
+    logs.value = result2.data;
 });
 
 const formatCurrency = (value) => {
@@ -96,23 +107,23 @@ watch(
 
 <template>
     <div class="grid">
-    
+
         <div class="col-12 lg:col-6 xl:col-3">
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div class="text-3xl">
-            
+
                         <span class="block text-500 font-medium mb-3">Users</span>
                         <br>
-              <div class="text-900 font-medium text-xl">    Month / 15</div>
-              <br>
-                        <div class="text-900 font-medium text-xl">All / 152</div>
+                        <div class="text-900 font-medium text-xl"> Month / 15</div>
+                        <br>
+                        <div class="text-900 font-medium text-xl">All / 1252</div>
                     </div>
                     <div class="flex align-items-center justify-content-center " style="width: 2.5rem; height: 2.5rem">
                         <i class="pi pi-users text-blue-500 text-xl text-8xl mr-6 mt-3 "></i>
                     </div>
                 </div>
-              
+
             </div>
         </div>
         <div class="col-12 lg:col-6 xl:col-3">
@@ -120,11 +131,11 @@ watch(
                 <div class="flex justify-content-between mb-3">
                     <div class="text-3xl">
                         <span class="block text-500 font-medium mb-3 ">Coach</span>
-                                <br>
-                    <div class="text-900 font-medium text-xl">Month / 10</div>
-                    <br>
+                        <br>
+                        <div class="text-900 font-medium text-xl">Month / 10</div>
+                        <br>
                         <div class="text-900 font-medium text-xl">All / 20</div>
-               
+
 
                     </div>
                     <div class=" flex align-items-center justify-content-center " style="width: 2.5rem; height: 2.5rem">
@@ -140,15 +151,15 @@ watch(
                     <div class="text-3xl">
                         <span class="block text-500 font-medium mb-3">Vip-Users</span>
                         <br>
-                 <div class="text-900 font-medium text-xl">Month / 15</div>
-<br>
+                        <div class="text-900 font-medium text-xl">Month / 15</div>
+                        <br>
                         <div class="text-900 font-medium text-xl">All / 50</div>
                     </div>
                     <div class="flex align-items-center justify-content-center" style="width: 2.5rem; height: 2.5rem">
                         <i class="pi pi-shield text-cyan-500 text-8xl mr-6 mt-3"></i>
                     </div>
                 </div>
-           
+
             </div>
         </div>
         <div class="col-12 lg:col-6 xl:col-3">
@@ -157,45 +168,49 @@ watch(
                     <div class="text-3xl">
                         <span class="block text-500 font-medium mb-3">Vip-Coach</span>
                         <br>
-                 <div class="text-900 font-medium text-xl">Month / 15</div>
-<br>
+                        <div class="text-900 font-medium text-xl">Month / 15</div>
+                        <br>
                         <div class="text-900 font-medium text-xl">All / 50</div>
                     </div>
                     <div class="flex align-items-center justify-content-center" style="width: 2.5rem; height: 2.5rem">
                         <i class="pi pi-shield text-orange-500 text-8xl mr-6 mt-3"></i>
                     </div>
                 </div>
-           
+
             </div>
         </div>
 
         <div class="col-12 xl:col-6">
             <div class="card">
-                <div class="col-12 mb-2 lg:col-4 lg:mb-0 " >
+                <div class="col-12 mb-2 lg:col-4 lg:mb-0 ">
                     <h5 class="">Online Users</h5>
-<!-- 
+                    <!-- 
                         <span class="p-input-icon-right float-left">
                             <InputText type="text" placeholder="Search" />
                             <i class="pi pi-search" />
                         </span> -->
-                    </div>
+                </div>
                 <DataTable :value="products" :rows="5" :paginator="true" responsiveLayout="scroll">
                     <Column style="width: 15%">
-                        <template #header> Users </template>
-                        <template #body="slotProps">
-                            <img :src="'demo/images/product/' + slotProps.data.image" :alt="slotProps.data.image" width="50" class="shadow-2" />
+                        <template #header> Email </template>
+                            <template #body="{data}">
+                            {{data['email']}}
                         </template>
                     </Column>
-                    <Column field="name" header="Name" :sortable="true" style="width: 35%"></Column>
+                    <Column field="name" header="Name" :sortable="true" style="width: 35%">
+                        <template #body="{data}">
+                            {{data['name']}} {{ data['lastName'] }}
+                        </template>
+                    </Column>
                     <!-- <Column field="price" header="Price" :sortable="true" style="width: 35%">
                         <template #body="slotProps">
                             {{ formatCurrency(slotProps.data.price) }}
                         </template>
                     </Column> -->
                     <Column style="width: 15%">
-                        <template #header> Menu </template>
-                        <template #body>
-                            <Button icon="pi pi-search" type="button" class="p-button-text"></Button>
+                        <template #header> ID </template>
+                        <template #body="{data}">
+                            {{data['_id']}}
                         </template>
                     </Column>
                 </DataTable>
@@ -285,86 +300,24 @@ watch(
             </div> -->
         </div>
         <div class="col-12 xl:col-6">
-     
+
             <div class="card h-">
                 <div class="flex align-items-center justify-content-between mb-4">
                     <h5>Notifications</h5>
                 </div>
-                <span class="block text-600 font-medium mb-3">TODAY</span>
+                <!-- <span class="block text-600 font-medium mb-3">TODAY</span> -->
                 <ul class="p-0 mx-0 mt-0 mb-4 list-none overflow-y-scroll">
-                    <li class="flex align-items-center py-2 border-bottom-1 surface-border">
-                        <div class="w-3rem h-3rem flex align-items-center justify-content-center bg-blue-100 border-circle mr-3 flex-shrink-0">
+                    <li class="flex align-items-center py-2 border-bottom-1 surface-border" v-for="log in logs">
+                        <div
+                            class="w-3rem h-3rem flex align-items-center justify-content-center bg-blue-100 border-circle mr-3 flex-shrink-0">
                             <i class="pi pi-bell text-xl text-blue-500"></i>
                         </div>
-                        <span class="text-900 line-height-3"
-                            >Richard Jones
-                            <span class="text-700">has purchased a blue t-shirt for <span class="text-blue-500">79$</span></span>
-                        </span>
-                    </li>
-                             <li class="flex align-items-center py-2 border-bottom-1 surface-border">
-                        <div class="w-3rem h-3rem flex align-items-center justify-content-center bg-blue-100 border-circle mr-3 flex-shrink-0">
-                            <i class="pi pi-bell text-xl text-blue-500"></i>
-                        </div>
-                        <span class="text-900 line-height-3"
-                            >Richard Jones
-                            <span class="text-700">has purchased a blue t-shirt for <span class="text-blue-500">79$</span></span>
-                        </span>
-                    </li>
-                    <li class="flex align-items-center py-2 border-bottom-1 surface-border">
-                        <div class="w-3rem h-3rem flex align-items-center justify-content-center bg-blue-100 border-circle mr-3 flex-shrink-0">
-                            <i class="pi pi-bell text-xl text-blue-500"></i>
-                        </div>
-                        <span class="text-900 line-height-3"
-                            >Richard Jones
-                            <span class="text-700">has purchased a blue t-shirt for <span class="text-blue-500">79$</span></span>
-                        </span>
-                    </li>                  <li class="flex align-items-center py-2 border-bottom-1 surface-border">
-                        <div class="w-3rem h-3rem flex align-items-center justify-content-center bg-blue-100 border-circle mr-3 flex-shrink-0">
-                            <i class="pi pi-bell text-xl text-blue-500"></i>
-                        </div>
-                        <span class="text-900 line-height-3"
-                            >Richard Jones
-                            <span class="text-700">has purchased a blue t-shirt for <span class="text-blue-500">79$</span></span>
+                        <span class="text-900 line-height-3">{{ log.name }}
+                            <span class="text-700">{{ log.task }}</span>
                         </span>
                     </li>
                 </ul>
-                
-
-                <span class="block text-600 font-medium mb-3">YESTERDAY</span>
-                <ul class="p-0 m-0 list-none">
-                    <li class="flex align-items-center py-2 border-bottom-1 surface-border">
-                        <div class="w-3rem h-3rem flex align-items-center justify-content-center bg-blue-100 border-circle mr-3 flex-shrink-0">
-                            <i class="pi pi-bell text-xl text-blue-500"></i>
-                        </div>
-                        <span class="text-900 line-height-3"
-                            >Keyser Wick
-                            <span class="text-700">has purchased a black jacket for <span class="text-blue-500">59$</span></span>
-                        </span>
-                    </li>
-                    <li class="flex align-items-center py-2 border-bottom-1 surface-border">
-                        <div class="w-3rem h-3rem flex align-items-center justify-content-center bg-blue-100 border-circle mr-3 flex-shrink-0">
-                            <i class="pi pi-bell text-xl text-blue-500"></i>
-                        </div>
-                        <span class="text-900 line-height-3"
-                            >Jane Davis
-                            <span class="text-700">has posted a new questions about your product.</span>
-                        </span>
-                    </li>
-                </ul>
-                <ul class="p-0 m-0 list-none">
-                    <li class="flex align-items-center py-2 border-bottom-1 surface-border">
-                        <div class="w-3rem h-3rem flex align-items-center justify-content-center bg-blue-100 border-circle mr-3 flex-shrink-0">
-                            <i class="pi pi-bell text-xl text-blue-500"></i>
-                        </div>
-                        <span class="text-900 line-height-3"
-                            >Keyser Wick
-                            <span class="text-700">has purchased a black jacket for <span class="text-blue-500">59$</span></span>
-                        </span>
-                    </li>
-          
-                </ul>
-            </div>
-
         </div>
+
     </div>
-</template>
+</div></template>

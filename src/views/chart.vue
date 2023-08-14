@@ -118,6 +118,7 @@
 
     </div>
     <div class="card col-12 xl:col-6 w-full ">
+        <h3>Now Year Data</h3>
         <Chart type="bar" :data="chartData" :options="chartOptions" class="h-30rem" />
 
     </div>
@@ -129,7 +130,7 @@
 
 <script setup>
 import { reactive, ref, onMounted } from 'vue'
-import { getUsersData } from '../modules/users'
+import { getUsersData, getMonthlyStatus } from '../modules/users'
 
 const chartData = ref();
 const chartOptions = ref();
@@ -145,7 +146,7 @@ const premiumUsers = ref(0)
 const normalUsers = ref(0)
 const coachUsers = ref(0)
 const athleteUsers = ref(0)
-
+const chartData1 = ref(null)
 const printAll = () => {
     print()
 }
@@ -188,14 +189,21 @@ onMounted(async () => {
         ]
     };
     chartOptions.value = setChartOptions();
+
+    const result2 = await getMonthlyStatus(2023)
+
+    console.log(result2);
+    chartData1.value = result2.data;
+    console.log(Object.keys(chartData1.value));
+    chartData.value = setChartData()
 });
 
 
 const setChartData = () => {
     const documentStyle = getComputedStyle(document.documentElement);
-
+    if (chartData1.value === null) return {}
     return {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        labels: Object.keys(chartData1.value),
         datasets: [
             // {
             //     type: 'line',
@@ -210,7 +218,8 @@ const setChartData = () => {
                 type: 'bar',
                 label: 'woman',
                 backgroundColor: documentStyle.getPropertyValue('--green-500'),
-                data: [21, 84, 24, 64, 37, 65, 34],
+                data: [chartData1.value['1'].manUsersCount, chartData1.value['2'].manUsersCount, chartData1.value['3'].womanUsersCount, chartData1.value['4'].womanUsersCount, chartData1.value['5'].womanUsersCount, chartData1.value['6'].womanUsersCount, chartData1.value['7'].womanUsersCount,
+                chartData1.value['8'].womanUsersCount, chartData1.value['9'].womanUsersCount, chartData1.value['10'].womanUsersCount, chartData1.value['11'].womanUsersCount, chartData1.value['12'].womanUsersCount],
                 borderColor: 'white',
                 borderWidth: 2
             },
@@ -218,21 +227,25 @@ const setChartData = () => {
                 type: 'bar',
                 label: 'man',
                 backgroundColor: documentStyle.getPropertyValue('--blue-500'),
-                data: [21, 84, 24, 35, 37, 65, 34],
+                data: [chartData1.value['1'].manUsersCount, chartData1.value['2'].manUsersCount, chartData1.value['3'].manUsersCount, chartData1.value['4'].manUsersCount, chartData1.value['5'].manUsersCount, chartData1.value['6'].manUsersCount, chartData1.value['7'].manUsersCount,
+                chartData1.value['8'].manUsersCount, chartData1.value['9'].manUsersCount, chartData1.value['10'].manUsersCount, chartData1.value['11'].manUsersCount, chartData1.value['12'].manUsersCount],
                 borderColor: 'white',
                 borderWidth: 2
             },
             {
                 type: 'bar',
-                label: 'coach',
+                label: 'premium',
                 backgroundColor: documentStyle.getPropertyValue('--orange-500'),
-                data: [41, 52, 24, 64, 23, 21, 32]
+                data: [chartData1.value['1'].premiumUsersCount, chartData1.value['2'].premiumUsersCount, chartData1.value['3'].premiumUsersCount, chartData1.value['4'].premiumUsersCount, chartData1.value['5'].premiumUsersCount, chartData1.value['6'].premiumUsersCount, chartData1.value['7'].premiumUsersCount,
+                chartData1.value['8'].premiumUsersCount, chartData1.value['9'].premiumUsersCount, chartData1.value['10'].premiumUsersCount, chartData1.value['11'].premiumUsersCount, chartData1.value['12'].premiumUsersCount],
             },
             {
                 type: 'bar',
-                label: 'users',
+                label: 'normal',
                 backgroundColor: documentStyle.getPropertyValue('--gray-500'),
-                data: [41, 52, 24, 58, 23, 21, 32]
+                data: [chartData1.value['1'].normalUsersCount, chartData1.value['2'].normalUsersCount, chartData1.value['3'].normalUsersCount, chartData1.value['4'].normalUsersCount, chartData1.value['5'].normalUsersCount, chartData1.value['6'].normalUsersCount, chartData1.value['7'].normalUsersCount,
+                chartData1.value['8'].normalUsersCount, chartData1.value['9'].normalUsersCount, chartData1.value['10'].normalUsersCount, chartData1.value['11'].normalUsersCount, chartData1.value['12'].normalUsersCount],
+
             }
 
 

@@ -234,6 +234,33 @@ watch(gender, (value) => {
                             <Calendar v-model="filterModel.value" dateFormat="mm/dd/yy" placeholder="mm/dd/yyyy" />
                         </template>
                     </Column>
+                    <Column header="Gender" filterField="gender" style="min-width: 10rem">
+                        <template #body="{ data }">
+                            {{ data.gender }}
+                        </template>
+                        <template #filter="{ filterModel }">
+                            <InputText type="text" v-model="filterModel.value" class="p-column-filter"
+                                placeholder="Search by gender" />
+                        </template>
+                    </Column>
+                    <Column header="Role" filterField="role" style="min-width: 10rem">
+                        <template #body="{ data }">
+                            {{ data.role }}
+                        </template>
+                        <template #filter="{ filterModel }">
+                            <InputText type="text" v-model="filterModel.value" class="p-column-filter"
+                                placeholder="Search by gender" />
+                        </template>
+                    </Column>
+                    <Column header="Birth Year" filterField="birthYear" style="min-width: 10rem">
+                        <template #body="{ data }">
+                            {{ data.birthYear }}
+                        </template>
+                        <template #filter="{ filterModel }">
+                            <InputText type="text" v-model="filterModel.value" class="p-column-filter"
+                                placeholder="Search by gender" />
+                        </template>
+                    </Column>
                     <Column field="Premium" header="Premium" dataType="boolean" bodyClass="text-center"
                         style="min-width: 8rem">
                         <template #body="{ data }">
@@ -243,6 +270,14 @@ watch(gender, (value) => {
                             <TriStateCheckbox v-model="filterModel.value" />
                         </template>
                     </Column>
+
+                    <Column field="Block" header="Block"
+                        style="min-width: 8rem">
+                        <template #body>
+                            <Button icon="pi pi-limit" @click="visible = true" />
+                        </template>
+                    </Column>
+
 
 
                 </DataTable>
