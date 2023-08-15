@@ -321,6 +321,128 @@ const initFilters = () => {
             </div>
         </div>
     </div>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="grid">
+        <div class="col-12">
+            <div class="card">
+                <Toast />
+ 
+
+                <DataTable ref="dt" :value="products" v-model:selection="selectedProducts" dataKey="id" :paginator="true"
+                    :rows="10" :filters="filters"
+                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                    :rowsPerPageOptions="[5, 10, 25]"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} movements"
+                    responsiveLayout="scroll">
+                    <template #header>
+                        <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                      
+                        </div>
+                    </template>
+                    <Column header="Image" headerStyle="width:14%; min-width:10rem;">
+                        <template #body="slotProps">
+                            <span class="p-column-title">Image</span>
+                            <img :src="slotProps.data.animationUrl" :alt="slotProps.data.animationUrl" class="shadow-2"
+                                width="100" />
+                        </template>
+                    </Column>
+                    <Column field="name" header="Name" :sortable="true" headerStyle="width:14%; min-width:10rem;">
+                        <template #body="slotProps">
+                            <span class="p-column-title">Name</span>
+                            {{ slotProps.data.name }}
+                        </template>
+                    </Column>
+                    
+
+                    <Column field="category" header="Category" :sortable="true" headerStyle="width:14%; min-width:10rem;">
+                        <template #body="slotProps">
+                            <span class="p-column-title">Category</span>
+                            {{ slotProps.data.category }}
+                        </template>
+                    </Column>
+                    <Column field="description" header="Description" :sortable="true" headerStyle="width:14%; min-width:10rem;">
+                        <template #body="slotProps">
+                            <span class="p-column-title">Description</span>
+                            {{ slotProps.data.description }}
+                        </template>
+                    </Column>
+         
+                    <div class="w-8"></div>
+                    <Column headerStyle="min-width:10rem;">
+                        <template #body="slotProps">
+               
+                            <Button title="cancel" icon="pi pi-stopwatch" class="p-button-rounded p-button-danger mt-2"
+                                 />
+                        </template>
+                    </Column>
+                </DataTable>
+
+                <Dialog v-model:visible="productDialog" :style="{ width: '450px' }" header="Product Details" :modal="true"
+                    class="p-fluid">
+                    <img :src="'demo/images/product/' + product.image" :alt="product.image" v-if="product.image" width="150"
+                        class="mt-0 mx-auto mb-5 block shadow-2" />
+                    <div class="field">
+                        <label for="name">Name</label>
+                        <InputText id="name" v-model.trim="product.name" required="true" autofocus
+                            :class="{ 'p-invalid': submitted && !product.name }" />
+                        <small class="p-invalid" v-if="submitted && !product.name">Name is required.</small>
+                    </div>
+                    <div class="field">
+                        <label for="description">Description</label>
+                        <Textarea id="description" v-model="product.description" required="true" rows="3" cols="20" />
+                    </div>
+                
+
+                    <div class="field">
+                        <label class="mb-3">Category</label>
+                        <div class="formgrid grid">
+                            <div class="field-radiobutton col-6" v-for="cat in categories">
+                                <RadioButton id="category1" name="category" :value="cat._id" v-model="selectedCat" />
+                                <label for="category1">{{ cat.name }}</label>
+                            </div>
+                        </div>
+                    </div>
+   
+                    <template #footer>
+                        <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="hideDialog" />
+                        <Button label="Save" icon="pi pi-check" class="p-button-text" @click="saveProduct" />
+                    </template>
+                </Dialog>
+
+                <Dialog v-model:visible="deleteProductDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">
+                    <div class="flex align-items-center justify-content-center">
+                        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
+                        <span v-if="product">Are you sure you want to delete <b>{{ product.name }}</b>?</span>
+                    </div>
+                    <template #footer>
+                        <Button label="No" icon="pi pi-times" class="p-button-text" @click="deleteProductDialog = false" />
+                        <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="deleteProduct" />
+                    </template>
+                </Dialog>
+
+                <Dialog v-model:visible="deleteProductsDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">
+                    <div class="flex align-items-center justify-content-center">
+                        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
+                        <span v-if="product">Are you sure you want to delete the selected products?</span>
+                    </div>
+                    <template #footer>
+                        <Button label="No" icon="pi pi-times" class="p-button-text" @click="deleteProductsDialog = false" />
+                        <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="deleteSelectedProducts" />
+                    </template>
+                </Dialog>
+            </div>
+        </div>
+    </div>
 </template>
 
 <style scoped lang="scss">

@@ -3,7 +3,7 @@
     <hr>
     <div class="grid p-fluid ">
 
-        <div class="col-12 lg:col-6 xl:col-3">
+        <div class="col-12 lg:col-6 xl:col-4">
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div class="text-3xl">
@@ -21,7 +21,7 @@
 
             </div>
         </div>
-        <div class="col-12 lg:col-6 xl:col-3">
+        <div class="col-12 lg:col-6 xl:col-4">
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div class="text-3xl">
@@ -39,7 +39,7 @@
 
             </div>
         </div>
-        <div class="col-12 lg:col-6 xl:col-3">
+        <div class="col-12 lg:col-6 xl:col-4">
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div class="text-3xl">
@@ -75,7 +75,7 @@
               
             </div>
         </div>     -->
-        <div class="col-12 lg:col-6 xl:col-3">
+        <div class="col-12 lg:col-6 xl:col-4">
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div class="text-3xl">
@@ -93,7 +93,7 @@
 
             </div>
         </div>
-        <div class="col-12 lg:col-6 xl:col-3">
+        <div class="col-12 lg:col-6 xl:col-4">
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div class="text-3xl">
@@ -111,12 +111,74 @@
 
             </div>
         </div>
+        <div class="col-12 lg:col-6 xl:col-4">
+            <div class="card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div class="text-3xl">
+
+                        <span class="block text-500 font-medium mb-3">Woman</span>
+                        <br>
+                        <div class="text-900 font-medium text-5xl">{{ womanUsers }}</div>
+                        <br>
+
+                    </div>
+                    <div class="flex align-items-center justify-content-center " style="width: 2.5rem; height: 2.5rem">
+                        <i class="pi pi-user text-purple-500 text-xl text-8xl mr-6 mt-3 "></i>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-12 lg:col-6 xl:col-4">
+            <div class="card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div class="text-3xl">
+
+                        <span class="block text-500 font-medium mb-3">Man</span>
+                        <br>
+                        <div class="text-900 font-medium text-5xl">{{ manUsers }}</div>
+                        <br>
+
+                    </div>
+                    <div class="flex align-items-center justify-content-center " style="width: 2.5rem; height: 2.5rem">
+                        <i class="pi pi-user text-blue-500 text-xl text-8xl mr-6 mt-3 "></i>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
         <div class="col-12 lg:col-6 xl:col-3">
         </div>
 
 
 
     </div>
+    <div  class="col-12 lg:col-6 xl:col-6">
+            <div class="card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div class="text-3xl">
+
+                        <span class="block text-500 font-medium mb-3 flex">country</span>
+                            <li >Iran:</li>
+                        <li>Us/Canada: </li>
+                        <li>United Kingdom:</li>
+                        <li>Russia:</li>
+                        <li>Brazil:</li> 
+                            <li>AU/NZ:</li>
+                        <li>Asia:</li>
+                        <li>Europe:</li>
+                        <li>Latin America:</li>
+                        <li>Africa:</li>
+                        
+                  
+                    </div>
+                    <div class="flex align-items-center justify-content-center " style="width: 2.5rem; height: 2.5rem">
+                    </div>
+                </div>
+
+            </div>
+        </div>
     <div class="card col-12 xl:col-6 w-full ">
         <h3>Now Year Data</h3>
         <Chart type="bar" :data="chartData" :options="chartOptions" class="h-30rem" />

@@ -175,6 +175,25 @@ watch(gender, (value) => {
                 </div>
                 
             </div>
+            <div class="card flex flex-wrap justify-content-center gap-4">
+                <div class="flex align-items-center">
+                    <RadioButton v-model="age_1" inputId="ingredient3" name="pizza" value="age_1" />
+                    <label for="ingredient3" class="ml-2"> 17 - 25 </label>
+                </div>
+                <div class="flex align-items-center">
+                    <RadioButton v-model="age_2" inputId="ingredient3" name="pizza" value="age_2" />
+                    <label for="ingredient3" class="ml-2"> 25 - 30 </label>
+                </div>
+                <div class="flex align-items-center">
+                    <RadioButton v-model="age_3" inputId="ingredient3" name="pizza" value="age_3" />
+                    <label for="ingredient3" class="ml-2"> 30 - 40 </label>
+                </div>
+                <div class="flex align-items-center">
+                    <RadioButton v-model="age_4" inputId="ingredient3" name="pizza" value="age_4" />
+                    <label for="ingredient3" class="ml-2">40 + </label>
+                </div>
+                
+            </div>
             <div class="card">
                 <h5>Users</h5>
                 <DataTable :value="filtered" :paginator="true" class="p-datatable-gridlines" :rows="10" dataKey="id"
