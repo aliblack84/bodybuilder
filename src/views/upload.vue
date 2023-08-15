@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue'
+import { onBeforeMount, ref,onMounted } from 'vue'
 import { useToast } from 'primevue/usetoast';
 import { getAllCategories, createCategory, createMovement } from '../modules/animation'
 import axios from 'axios';
@@ -12,6 +12,7 @@ const categoryName = ref('')
 const toast = useToast();
 const dropdownValue = ref<any>()
 const file = ref();
+const visible =ref(false)
 
 onBeforeMount(async () => {
     await updateData()
@@ -83,6 +84,18 @@ const createMovementM = async () => {
         toast.add({ severity: 'error', summary: 'Invalid', detail: 'Upload failed', life: 3000 });
     }
 }
+const deletecat = ()=>{
+    visible.value =true
+}
+const close = ()=>{
+    visible.value= false
+}
+const nodes = ref();
+const selectedValue = ref(null);
+
+onMounted(() => {
+
+});
 </script>
 
 <template>
@@ -133,7 +146,31 @@ const createMovementM = async () => {
 
  -->
                 <Button label="Create" class="mr-2 mb-2" @click="createCategoryC()" />
+                <Button style="float: right;background-color: red; border-color: red;"
+                 label="Delete Category" class="mr-2 mb-2 " @click="deletecat()" />
+                
+                <Dialog :modal="true" v-model:visible="visible" header="delete category" :style="{ width: '50vw' }">
 
+         <div>
+
+    <div class="card  justify-content-center" style="height: 120px ;">
+    <TreeSelect v-model="selectedValue" class=" w-full p-invalid" :options="nodes" placeholder="TreeSelect" />
+    
+    <Button style="float: right;margin: 5px;background-color: red; border-color: red;"
+                 label="Delete" class="mr-2 mb-2 " @click="" />
+</div>
+
+      
+      
+                
+        </div>
+        <br>
+        <br>
+
+            <Button style="float: right;" label="" icon="pi pi-sign-out" @click="close()" />
+
+
+        </Dialog>
             </div>
         </div>
     </div>

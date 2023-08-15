@@ -5,6 +5,7 @@ import ProductService from '@/service/ProductService';
 import { ref, onBeforeMount, onMounted, watch } from 'vue';
 import { getUsers } from '../modules/users'
 const open = ref(false)
+const checked = ref (false)
 const customer1 = ref(null);
 const customer2 = ref(null);
 const customer3 = ref(null);
@@ -200,6 +201,15 @@ watch(gender, (value) => {
                                 placeholder="Search by name" />
                         </template>
                     </Column>
+                    <Column field="email" header="email" style="min-width: 12rem">
+                        <template #body="{ data }">
+                            {{ data.name }} {{ data.lastName }}
+                        </template>
+                        <template #filter="{ filterModel }">
+                            <InputText type="text" v-model="filterModel.value" class="p-column-filter"
+                                placeholder="Search by name" />
+                        </template>
+                    </Column>
                     <Dialog v-model:open="open" header="Message" :style="{ width: '50vw' }">
                         <p> difudfhduhfudcbducubc </p>
                         <Button style="float: right;" label="Sent to Email" icon="pi pi-link" @click="open = true" />
@@ -243,6 +253,15 @@ watch(gender, (value) => {
                                 placeholder="Search by gender" />
                         </template>
                     </Column>
+                    <Column header="Age" filterField="Age" style="min-width: 10rem">
+                        <template #body="{ data }">
+                            {{ data.gender }}
+                        </template>
+                        <template #filter="{ filterModel }">
+                            <InputText type="text" v-model="filterModel.value" class="p-column-filter"
+                                placeholder="Search by gender" />
+                        </template>
+                    </Column>
                     <Column header="Role" filterField="role" style="min-width: 10rem">
                         <template #body="{ data }">
                             {{ data.role }}
@@ -264,8 +283,7 @@ watch(gender, (value) => {
                     <Column field="Premium" header="Premium" dataType="boolean" bodyClass="text-center"
                         style="min-width: 8rem">
                         <template #body="{ data }">
-                            <span>{{ data.preStatus.data.text }}</span>
-                        </template>
+                            <InputSwitch style="height: 28px; width: 50px;"  class="m-2" v-model="checked" />                        </template>
                         <template #filter="{ filterModel }">
                             <TriStateCheckbox v-model="filterModel.value" />
                         </template>
@@ -274,7 +292,7 @@ watch(gender, (value) => {
                     <Column field="Block" header="Block"
                         style="min-width: 8rem">
                         <template #body>
-                            <Button icon="pi pi-limit" @click="visible = true" />
+                            <Button icon="pi pi-ban" @click="visible = true" />
                         </template>
                     </Column>
 

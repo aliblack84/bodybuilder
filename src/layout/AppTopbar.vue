@@ -89,8 +89,27 @@ const isOutsideClicked = (event) => {
     const topbarEl = document.querySelector('.layout-topbar-menu-button');
 
     return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
-};
+}
+;
 
+const items = ref([
+  { id: 1, dateTime: new Date('2023-08-15T10:30:00') },
+  { id: 2,  dateTime: new Date('2023-08-15T12:00:00') },
+  { id: 3,  dateTime: new Date('2023-08-16T15:00:00') },
+  { id: 4,  dateTime: new Date('2023-08-16T09:30:00') },
+  { id: 5, dateTime: new Date('2023-08-17T19:00:00') },
+]);
+
+const filterDate = ref(null);
+const filterTime = ref(null);
+
+const filteredItems = computed(() => {
+  return items.value.filter(item => {
+    const dateMatch = !filterDate.value || new Date(item.dateTime).toDateString() === filterDate.value.toDateString();
+    const timeMatch = !filterTime.value || new Date(item.dateTime).toLocaleTimeString().includes(filterTime.value);
+    return dateMatch && timeMatch;
+  });
+});
 </script>
 
 <template>
@@ -119,6 +138,7 @@ const isOutsideClicked = (event) => {
             <Button icon="pi pi-user" @click="visible = true" />
             <Dialog v-model:visible="visible" modal :style="{ width: '50vw' }">
 
+
                 <!-- <table style="margin: auto;width: 70%;" border="1">
 <tr style="margin: auto;">
     <td>Work</td>   <td>Date</td>
@@ -131,6 +151,13 @@ const isOutsideClicked = (event) => {
  <br>
  <br> -->
                 <div class="card">
+                    <div class="date-time-filter">
+    <label for="datePicker">Filter by Date   :      </label>
+    <Calendar v-model="filterDate" id="datePicker" showIcon />
+
+    <ul>
+    </ul>
+  </div>
                     <DataTable :value="logs" :paginator="true" :rows="5" :rowsPerPageOptions="[5, 10, 25]" v-model:filters="filters1" :filters="filters1" 
                     :globalFilterFields="['task', 'country.name', 'representative.name', 'status']">
                         <template #header>

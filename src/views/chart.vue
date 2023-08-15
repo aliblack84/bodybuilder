@@ -123,8 +123,16 @@
 
     </div>
 
-    <div class="card col-12 xl:col-6 w-full ">
+    <!-- <div class="card col-12 xl:col-6 w-full ">
         <Chart type="bar" :data="lineData" :options="lineOptions" />
+    </div> -->
+    <div class="background">
+    <div class="small-chart-container"><Chart type="pie" :data="data" :options="options" /></div>
+
+</div>
+<br>
+<div class="cart">
+    <Chart type="bar" :data="barChartData" :options="barChartOptions" class="h-30rem"  />
     </div>
 </template>
 
@@ -134,7 +142,6 @@ import { getUsersData, getMonthlyStatus } from '../modules/users'
 
 const chartData = ref();
 const chartOptions = ref();
-
 const onlineUsers = ref(0);
 const offlineUsers = ref(0);
 const blockedUsers = ref(0);
@@ -147,6 +154,7 @@ const normalUsers = ref(0)
 const coachUsers = ref(0)
 const athleteUsers = ref(0)
 const chartData1 = ref(null)
+const chartData2 = ref ()
 const printAll = () => {
     print()
 }
@@ -246,7 +254,24 @@ const setChartData = () => {
                 data: [chartData1.value['1'].normalUsersCount, chartData1.value['2'].normalUsersCount, chartData1.value['3'].normalUsersCount, chartData1.value['4'].normalUsersCount, chartData1.value['5'].normalUsersCount, chartData1.value['6'].normalUsersCount, chartData1.value['7'].normalUsersCount,
                 chartData1.value['8'].normalUsersCount, chartData1.value['9'].normalUsersCount, chartData1.value['10'].normalUsersCount, chartData1.value['11'].normalUsersCount, chartData1.value['12'].normalUsersCount],
 
-            }
+            },
+/*add role*/
+
+            {
+                type: 'bar',
+                label: 'athlete',
+                backgroundColor: documentStyle.getPropertyValue('--red-500'),
+                data: [chartData1.value['1'].premiumUsersCount, chartData1.value['2'].premiumUsersCount, chartData1.value['3'].premiumUsersCount, chartData1.value['4'].premiumUsersCount, chartData1.value['5'].premiumUsersCount, chartData1.value['6'].premiumUsersCount, chartData1.value['7'].premiumUsersCount,
+                chartData1.value['8'].premiumUsersCount, chartData1.value['9'].premiumUsersCount, chartData1.value['10'].premiumUsersCount, chartData1.value['11'].premiumUsersCount, chartData1.value['12'].premiumUsersCount],
+            },
+            {
+                type: 'bar',
+                label: 'coach',
+                backgroundColor: documentStyle.getPropertyValue('--purple-500'),
+                data: [chartData1.value['1'].normalUsersCount, chartData1.value['2'].normalUsersCount, chartData1.value['3'].normalUsersCount, chartData1.value['4'].normalUsersCount, chartData1.value['5'].normalUsersCount, chartData1.value['6'].normalUsersCount, chartData1.value['7'].normalUsersCount,
+                chartData1.value['8'].normalUsersCount, chartData1.value['9'].normalUsersCount, chartData1.value['10'].normalUsersCount, chartData1.value['11'].normalUsersCount, chartData1.value['12'].normalUsersCount],
+
+            },
 
 
         ]
@@ -321,4 +346,173 @@ const lineData = ref({
 });
 
 
+const data = ref();
+const options = ref({
+    plugins: {
+        legend: {
+            labels: {
+                usePointStyle: true
+            }
+        }
+    }
+});
+
+// Run onMounted logic
+onMounted(() => {
+    data.value = generateChartData();
+});
+
+// Define function to generate chart data
+const generateChartData = () => {
+    const documentStyle = getComputedStyle(document.body);
+
+    return {
+        labels: ['IRAN', 'US/CANADA', 'United Kingdom','Russia','Brazil','AU/NZ','Other (Asia)',
+        'Other (Europe)','Other (Latin America)','Other (Africa)'],
+        datasets: [
+            {
+                data: [40, 25, 100,50,85,45,66,12,88,14],
+                backgroundColor: [
+                getComputedStyle(document.documentElement).getPropertyValue('--blue-500'),
+  getComputedStyle(document.documentElement).getPropertyValue('--yellow-500'),
+  getComputedStyle(document.documentElement).getPropertyValue('--green-500'),
+  getComputedStyle(document.documentElement).getPropertyValue('--purple-500'),
+  getComputedStyle(document.documentElement).getPropertyValue('--orange-500'),
+  getComputedStyle(document.documentElement).getPropertyValue('--red-500'),
+  getComputedStyle(document.documentElement).getPropertyValue('--teal-500'),
+  getComputedStyle(document.documentElement).getPropertyValue('--pink-500'),
+  getComputedStyle(document.documentElement).getPropertyValue('--indigo-500'),
+  getComputedStyle(document.documentElement).getPropertyValue('--cyan-500'),
+  getComputedStyle(document.documentElement).getPropertyValue('--brown-500'),
+  getComputedStyle(document.documentElement).getPropertyValue('--lime-500'),documentStyle.getPropertyValue('--blue-500'), documentStyle.getPropertyValue('--yellow-500'), documentStyle.getPropertyValue('--green-500'),],
+                hoverBackgroundColor: [
+                    
+                getComputedStyle(document.documentElement).getPropertyValue('--blue-400'),
+  getComputedStyle(document.documentElement).getPropertyValue('--yellow-400'),
+  getComputedStyle(document.documentElement).getPropertyValue('--green-400'),
+  getComputedStyle(document.documentElement).getPropertyValue('--purple-400'),
+  getComputedStyle(document.documentElement).getPropertyValue('--orange-400'),
+  getComputedStyle(document.documentElement).getPropertyValue('--red-400'),
+  getComputedStyle(document.documentElement).getPropertyValue('--teal-400'),
+  getComputedStyle(document.documentElement).getPropertyValue('--pink-400'),
+  getComputedStyle(document.documentElement).getPropertyValue('--indigo-400'),
+  getComputedStyle(document.documentElement).getPropertyValue('--cyan-400'),
+  getComputedStyle(document.documentElement).getPropertyValue('--brown-400'),
+  getComputedStyle(document.documentElement).getPropertyValue('--lime-400'),documentStyle.getPropertyValue('--blue-400'), documentStyle.getPropertyValue('--yellow-400'), documentStyle.getPropertyValue('--green-400'),]
+            
+            
+            }
+        ]
+    };
+};
+
+
+onMounted(() => {
+    barChartData.value = setBarChartData();
+    barChartOptions.value = setBarChartOptions();
+});
+
+const barChartData = ref();
+const barChartOptions = ref();
+
+const setBarChartData = () => {
+    const documentStyle = getComputedStyle(document.documentElement);
+
+    return {
+        labels: [' 17 - 25','25 - 30','30 - 40','40+' ],
+        datasets: [
+            {
+                label: 'age',
+                backgroundColor: documentStyle.getPropertyValue('--blue-500'),
+                borderColor: documentStyle.getPropertyValue('--blue-500'),
+                data: [65, 59, 80, 81,]
+            },
+ 
+        ]
+    };
+};
+const setBarChartOptions = () => {
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColor = documentStyle.getPropertyValue('--text-color');
+    const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
+    const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+
+    return {
+        indexAxis: 'y',
+        maintainAspectRatio: false,
+        aspectRatio: 0.8,
+        plugins: {
+            legend: {
+                labels: {
+                    fontColor: textColor
+                }
+            }
+        },
+        scales: {
+            x: {
+                ticks: {
+                    color: textColorSecondary,
+                    font: {
+                        weight: 500
+                    }
+                },
+                grid: {
+                    display: false,
+                    drawBorder: false
+                }
+            },
+            y: {
+                ticks: {
+                    color: textColorSecondary
+                },
+                grid: {
+                    color: surfaceBorder,
+                    drawBorder: false
+                }
+            }
+        }
+    };
+}
+
+/* 
+    17 - 25
+    25 - 30
+    30 - 40
+    40+
+*/
+
 </script>
+<style>
+.small-chart-container {
+    margin: auto;
+    padding: 50px;
+  width: 55%; /* Adjust the width as needed */
+  height: 60%; /* Adjust the height as needed */
+  /* Additional styling properties as needed */
+}
+.background{
+    background-color: white;
+border-radius: 10px;
+display: flex;
+}
+.cart{
+    width: auto;
+    background-color: white;
+    border-radius: 10px;
+
+}
+@media screen and (max-width: 1600px) {
+  .small-chart-container {
+    padding: 30px;
+    width: 70%; 
+
+  }
+  }
+  @media screen and (max-width: 700px) {
+  .small-chart-container {
+    padding: 30px;
+    width:100%; 
+
+  }
+  }
+</style>
