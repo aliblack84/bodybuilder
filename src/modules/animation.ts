@@ -81,3 +81,58 @@ export const removeMovement = async (id: string) => {
         return error.response;
     }
 }
+
+export const getAllPendingReqs = async () => {
+    try {
+        return await axios.post(getUrl('/movement/pending'), {
+        }, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('jwtToken')}`
+            }
+        })
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const killP = async (id) => {
+    try {
+        return await axios.post(getUrl('/movement/pending/decline'), {
+            pendingId: id
+        }, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('jwtToken')}`
+            }
+        })
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const acceptP = async (id) => {
+    try {
+        return await axios.post(getUrl('/movement/pending/accept'), {
+            pendingId: id
+        }, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('jwtToken')}`
+            }
+        })
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const removeCategory = async (id) => {
+    try {
+        return await axios.post(getUrl('/movement/category/remove'), {
+            categoryId: id
+        }, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('jwtToken')}`
+            }
+        })
+    } catch (error) {
+        return error.response;
+    }
+}

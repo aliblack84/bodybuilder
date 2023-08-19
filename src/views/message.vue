@@ -35,8 +35,8 @@
         <p style="font-weight: bold; color: rgb(176, 173, 173);">Loading...</p>
     </div>
     <h3>All tickets</h3>
-    <InputText  placeholder="Search" style="width: 30% ;" />
-                                <div style="height: 20px;"></div>
+    <!-- <InputText  placeholder="Search" style="width: 30% ;" />
+                                <div style="height: 20px;"></div> -->
     <div v-for="message in messages" class="card ">
         <div class=" flex align-items-center py-2">
             <div

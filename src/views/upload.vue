@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onBeforeMount, ref,onMounted } from 'vue'
+import { onBeforeMount, ref, onMounted } from 'vue'
 import { useToast } from 'primevue/usetoast';
-import { getAllCategories, createCategory, createMovement } from '../modules/animation'
+import { getAllCategories, createCategory, createMovement, removeCategory } from '../modules/animation'
 import axios from 'axios';
 import { getUrl } from '../modules/universal';
 const dropdownValues = ref([
@@ -12,7 +12,7 @@ const categoryName = ref('')
 const toast = useToast();
 const dropdownValue = ref<any>()
 const file = ref();
-const visible =ref(false)
+const visible = ref(false)
 
 onBeforeMount(async () => {
     await updateData()
@@ -84,14 +84,24 @@ const createMovementM = async () => {
         toast.add({ severity: 'error', summary: 'Invalid', detail: 'Upload failed', life: 3000 });
     }
 }
-const deletecat = ()=>{
-    visible.value =true
+const deletecat = () => {
+    visible.value = true
 }
-const close = ()=>{
-    visible.value= false
+const close = () => {
+    visible.value = false
 }
 const nodes = ref();
 const selectedValue = ref(null);
+
+
+
+const categoryDelete = async () => {
+    const data = await removeCategory(selectedValue.value)
+
+    toast.add({ severity: 'info', summary: 'Info', detail: data.data, life: 3000 });
+    await updateData()
+
+}
 
 onMounted(() => {
 
@@ -146,31 +156,27 @@ onMounted(() => {
 
  -->
                 <Button label="Create" class="mr-2 mb-2" @click="createCategoryC()" />
-                <Button style="float: right;background-color: red; border-color: red;"
-                 label="Delete Category" class="mr-2 mb-2 " @click="deletecat()" />
-                
-                <Dialog :modal="true" v-model:visible="visible" header="delete category" :style="{ width: '50vw' }">
+                <Button style="float: right;background-color: red; border-color: red;" label="Delete Category"
+                    class="mr-2 mb-2 " @click="deletecat()" />
 
-         <div>
+                <Dialog :modal="true" v-model:visible="visible" header="Delete category" :style="{ width: '50vw' }">
 
-    <div class="card  justify-content-center" style="height: 120px ;">
-    <TreeSelect v-model="selectedValue" class=" w-full p-invalid" :options="nodes" placeholder="TreeSelect" />
-    
-    <Button style="float: right;margin: 5px;background-color: red; border-color: red;"
-                 label="Delete" class="mr-2 mb-2 " @click="" />
-</div>
+                    <div>
 
-      
-      
-                
-        </div>
-        <br>
-        <br>
+                        <Dropdown class="w-8" v-model="selectedValue" :options="dropdownValues" optionLabel="name"
+                            placeholder="Select Category" />
 
-            <Button style="float: right;" label="" icon="pi pi-sign-out" @click="close()" />
+                        <Button style="float: right;margin: 5px;background-color: red; border-color: red;" label="Delete"
+                            class="mr-2 mb-2 " @click="categoryDelete()" />
 
 
-        </Dialog>
+
+
+                    </div>
+
+
+
+                </Dialog>
             </div>
         </div>
     </div>

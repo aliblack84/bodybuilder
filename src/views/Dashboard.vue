@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref, watch } from 'vue';
 import ProductService from '@/service/ProductService';
 import { useLayout } from '@/layout/composables/layout';
-import { getOnlineUsers, getLogs } from '../modules/users'
+import { getOnlineUsers, getLogs, getMonthlyStatus } from '../modules/users'
 const { isDarkTheme } = useLayout();
 
 const products = ref(null);
@@ -15,6 +15,7 @@ const items = ref([
 ]);
 const lineOptions = ref(null);
 const productService = new ProductService();
+const data = ref()
 
 onMounted(async() => {
     console.log(getOnlineUsers);
@@ -27,6 +28,9 @@ onMounted(async() => {
 
     console.log(result2);
     logs.value = result2.data;
+
+    const result3 = await getMonthlyStatus((new Date()).getFullYear())
+    data.value = result3.data;
 });
 
 const formatCurrency = (value) => {
@@ -108,16 +112,16 @@ watch(
 <template>
     <div class="grid">
 
-        <div class="col-12 lg:col-6 xl:col-3">
+        <div class="col-12 lg:col-6 xl:col-3" v-if="data !=null">
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div class="text-3xl">
 
                         <span class="block text-500 font-medium mb-3">Users</span>
                         <br>
-                        <div class="text-900 font-medium text-xl"> Month / 15</div>
+                        <div class="text-900 font-medium text-xl"> Month / {{ data[(new Date().getMonth() + 1)].allUsersCount }}</div>
                         <br>
-                        <div class="text-900 font-medium text-xl">All / 1252</div>
+                        <div class="text-900 font-medium text-xl">All / {{ data.allUsers }}</div>
                     </div>
                     <div class="flex align-items-center justify-content-center " style="width: 2.5rem; height: 2.5rem">
                         <i class="pi pi-users text-blue-500 text-xl text-8xl mr-6 mt-3 "></i>
@@ -126,54 +130,18 @@ watch(
 
             </div>
         </div>
-        <div class="col-12 lg:col-6 xl:col-3">
-            <div class="card mb-0">
-                <div class="flex justify-content-between mb-3">
-                    <div class="text-3xl">
-                        <span class="block text-500 font-medium mb-3 ">Coach</span>
-                        <br>
-                        <div class="text-900 font-medium text-xl">Month / 10</div>
-                        <br>
-                        <div class="text-900 font-medium text-xl">All / 20</div>
-
-
-                    </div>
-                    <div class=" flex align-items-center justify-content-center " style="width: 2.5rem; height: 2.5rem">
-                        <i class="pi pi-user text-orange-500 text-8xl mt-3 mr-6"></i>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <div class="col-12 lg:col-6 xl:col-3">
+        <div class="col-12 lg:col-6 xl:col-3"  v-if="data !=null">
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div class="text-3xl">
                         <span class="block text-500 font-medium mb-3">Vip-Users</span>
                         <br>
-                        <div class="text-900 font-medium text-xl">Month / 15</div>
+                        <div class="text-900 font-medium text-xl"> Month / {{ data[(new Date().getMonth() + 1)].premiumUsersCount }}</div>
                         <br>
-                        <div class="text-900 font-medium text-xl">All / 50</div>
+                        <div class="text-900 font-medium text-xl">All / {{ data.premiumUsers }}</div>
                     </div>
                     <div class="flex align-items-center justify-content-center" style="width: 2.5rem; height: 2.5rem">
                         <i class="pi pi-shield text-cyan-500 text-8xl mr-6 mt-3"></i>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <div class="col-12 lg:col-6 xl:col-3">
-            <div class="card mb-0">
-                <div class="flex justify-content-between mb-3">
-                    <div class="text-3xl">
-                        <span class="block text-500 font-medium mb-3">Vip-Coach</span>
-                        <br>
-                        <div class="text-900 font-medium text-xl">Month / 15</div>
-                        <br>
-                        <div class="text-900 font-medium text-xl">All / 50</div>
-                    </div>
-                    <div class="flex align-items-center justify-content-center" style="width: 2.5rem; height: 2.5rem">
-                        <i class="pi pi-shield text-orange-500 text-8xl mr-6 mt-3"></i>
                     </div>
                 </div>
 

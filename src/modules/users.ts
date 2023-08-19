@@ -41,7 +41,7 @@ export const getMonthlyStatus = async (year: number) => {
 
 export const getOnlineUsers = async () => {
     try {
-        return await axios.post(getUrl('/user/online'),{}, {
+        return await axios.post(getUrl('/user/online'), {}, {
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem('jwtToken')}`
             }
@@ -53,7 +53,7 @@ export const getOnlineUsers = async () => {
 
 export const getLogs = async () => {
     try {
-        return await axios.post(getUrl('/user/logs'),{}, {
+        return await axios.post(getUrl('/user/logs'), {}, {
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem('jwtToken')}`
             }
@@ -62,3 +62,39 @@ export const getLogs = async () => {
         return error.response;
     }
 }
+
+export const getCountryData = async (year) => {
+    try {
+        return await axios.post(getUrl('/user/country/data'), {year}, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('jwtToken')}`
+            }
+        })
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const getAgeData = async () => {
+    try {
+        return await axios.post(getUrl('/user/age'), {}, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('jwtToken')}`
+            }
+        })
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const getMonthlyAgeStatus = async (year: number) => {
+    try {
+        return await axios.post(getUrl('/user/age/monthly-status'), { year }, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('jwtToken')}`
+            }
+        })
+    } catch (error) {
+        return error.response;
+    }
+} 

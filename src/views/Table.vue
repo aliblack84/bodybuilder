@@ -5,33 +5,12 @@ import ProductService from '@/service/ProductService';
 import { ref, onBeforeMount, onMounted, watch } from 'vue';
 import { getUsers } from '../modules/users'
 const open = ref(false)
-const checked = ref (false)
-const customer1 = ref(null);
-const customer2 = ref(null);
+const checked = ref(false)
 const customer3 = ref(null);
 const filters1 = ref(null);
 const loading1 = ref(null);
-const loading2 = ref(null);
-const idFrozen = ref(false);
 const products = ref(null);
 const expandedRows = ref([]);
-const statuses = ref(['unqualified', 'qualified', 'new', 'negotiation', 'renewal', 'proposal']);
-const representatives = ref([
-    { name: 'Amy Elsner', image: 'amyelsner.png' },
-    { name: 'Anna Fali', image: 'annafali.png' },
-    { name: 'Asiya Javayant', image: 'asiyajavayant.png' },
-    { name: 'Bernardo Dominic', image: 'bernardodominic.png' },
-    { name: 'Elwin Sharvill', image: 'elwinsharvill.png' },
-    { name: 'Ioni Bowcher', image: 'ionibowcher.png' },
-    { name: 'Ivan Magalhaes', image: 'ivanmagalhaes.png' },
-    { name: 'Onyama Limba', image: 'onyamalimba.png' },
-    { name: 'Stephen Shaw', image: 'stephenshaw.png' },
-    { name: 'XuXue Feng', image: 'xuxuefeng.png' }
-]);
-
-const customerService = new CustomerService();
-const productService = new ProductService();
-
 
 const initFilters1 = () => {
     filters1.value = {
@@ -62,6 +41,10 @@ const formatDate = (value) => {
 
     return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${date.getMinutes()}`
 };
+
+const setPremiumTrue = (id) => {
+    console.log(id);
+}
 const calculateCustomerTotal = (name) => {
     let total = 0;
     if (customer3.value) {
@@ -83,6 +66,7 @@ const users = ref([])
 const preStatus = ref('all')
 const role = ref('all')
 const gender = ref('all')
+const ageR = ref('all')
 
 onBeforeMount(() => {
     getUsers().then((allUsers) => {
@@ -100,16 +84,27 @@ onBeforeMount(() => {
 const update = () => {
     filtered.value = []
 
-    if (preStatus.value === 'all' && role.value === 'all' && gender.value === 'all') {
+    if (preStatus.value === 'all' && role.value === 'all' && gender.value === 'all' && ageR.value === 'all') {
         filtered.value = users.value;
         return;
     }
     users.value.map((user) => {
-        let shouldAdded = false;
-        const uGen = user.gender === 'male'? 'men' : 'women'
-        const pStatus = user.preStatus.stat === 3? 'premium' : 'normal'
-        if ((uGen === gender.value || gender.value === 'all') && (user.role === role.value || role.value === 'all') &&  (pStatus === preStatus.value || preStatus.value === 'all')) {
-            filtered.value.push(user)
+        const uGen = user.gender === 'male' ? 'men' : 'women'
+        const pStatus = user.preStatus.stat === 3 ? 'premium' : 'normal'
+        const age = (new Date()).getFullYear() - user.birthYear
+        if ((uGen === gender.value || gender.value === 'all') && (user.role === role.value || role.value === 'all') && (pStatus === preStatus.value || preStatus.value === 'all')) {
+            if (ageR.value === 'all') {
+                filtered.value.push(user)
+                return
+            }
+            const [min, max] = ageR.value.split('_')
+            if (parseInt(min) <= age && age < parseInt(max)) {
+                console.log(parseInt(min), parseInt(max))
+                console.log(age)
+                console.log(parseInt(min) >= age);
+                filtered.value.push(user)
+                return;
+            }
         }
     })
 }
@@ -121,6 +116,9 @@ watch(role, (value) => {
     update()
 })
 watch(gender, (value) => {
+    update()
+})
+watch(ageR, (value) => {
     update()
 })
 
@@ -158,7 +156,7 @@ watch(gender, (value) => {
                     <RadioButton v-model="role" inputId="ingredient2" name="pizza" value="all" />
                     <label for="ingredient2" class="ml-2"> All </label>
                 </div>
-                
+
             </div>
             <div class="card flex flex-wrap justify-content-center gap-4">
                 <div class="flex align-items-center">
@@ -173,26 +171,31 @@ watch(gender, (value) => {
                     <RadioButton v-model="gender" inputId="ingredient2" name="pizza" value="all" />
                     <label for="ingredient2" class="ml-2"> All </label>
                 </div>
-                
+
             </div>
             <div class="card flex flex-wrap justify-content-center gap-4">
                 <div class="flex align-items-center">
-                    <RadioButton v-model="age_1" inputId="ingredient3" name="pizza" value="age_1" />
+                    <RadioButton v-model="ageR" inputId="ingredient3" name="pizza" value="17_25" />
                     <label for="ingredient3" class="ml-2"> 17 - 25 </label>
                 </div>
                 <div class="flex align-items-center">
-                    <RadioButton v-model="age_2" inputId="ingredient3" name="pizza" value="age_2" />
+                    <RadioButton v-model="ageR" inputId="ingredient3" name="pizza" value="25_30" />
                     <label for="ingredient3" class="ml-2"> 25 - 30 </label>
                 </div>
                 <div class="flex align-items-center">
-                    <RadioButton v-model="age_3" inputId="ingredient3" name="pizza" value="age_3" />
+                    <RadioButton v-model="ageR" inputId="ingredient3" name="pizza" value="30_40" />
                     <label for="ingredient3" class="ml-2"> 30 - 40 </label>
                 </div>
                 <div class="flex align-items-center">
-                    <RadioButton v-model="age_4" inputId="ingredient3" name="pizza" value="age_4" />
+                    <RadioButton v-model="ageR" inputId="ingredient3" name="pizza" value="40_200" />
                     <label for="ingredient3" class="ml-2">40 + </label>
                 </div>
-                
+
+                <div class="flex align-items-center">
+                    <RadioButton v-model="ageR" inputId="ingredient3" name="pizza" value="all" />
+                    <label for="ingredient3" class="ml-2">All</label>
+                </div>
+
             </div>
             <div class="card">
                 <h5>Users</h5>
@@ -220,9 +223,9 @@ watch(gender, (value) => {
                                 placeholder="Search by name" />
                         </template>
                     </Column>
-                    <Column field="email" header="email" style="min-width: 12rem">
+                    <Column field="email" header="Email" style="min-width: 12rem">
                         <template #body="{ data }">
-                            {{ data.name }} {{ data.lastName }}
+                            {{ data.email }}
                         </template>
                         <template #filter="{ filterModel }">
                             <InputText type="text" v-model="filterModel.value" class="p-column-filter"
@@ -274,7 +277,7 @@ watch(gender, (value) => {
                     </Column>
                     <Column header="Age" filterField="Age" style="min-width: 10rem">
                         <template #body="{ data }">
-                            {{ data.gender }}
+                            {{ (new Date()).getFullYear() - data.birthYear }}
                         </template>
                         <template #filter="{ filterModel }">
                             <InputText type="text" v-model="filterModel.value" class="p-column-filter"
@@ -302,14 +305,15 @@ watch(gender, (value) => {
                     <Column field="Premium" header="Premium" dataType="boolean" bodyClass="text-center"
                         style="min-width: 8rem">
                         <template #body="{ data }">
-                            <InputSwitch style="height: 28px; width: 50px;"  class="m-2" v-model="checked" />                        </template>
+                            <Button icon="pi pi-check" @click="setPremiumTrue(data.email)" />
+                            
+                        </template>
                         <template #filter="{ filterModel }">
                             <TriStateCheckbox v-model="filterModel.value" />
                         </template>
                     </Column>
 
-                    <Column field="Block" header="Block"
-                        style="min-width: 8rem">
+                    <Column field="Block" header="Block" style="min-width: 8rem">
                         <template #body>
                             <Button icon="pi pi-ban" @click="visible = true" />
                         </template>

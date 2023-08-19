@@ -2,7 +2,7 @@
 import { FilterMatchMode } from 'primevue/api';
 import { ref, onMounted, onBeforeMount } from 'vue';
 import ProductService from '../service/ProductService';
-import { getAllCategories, getAllMovements, updateMovement, removeMovement } from '../modules/animation'
+import { getAllCategories, getAllMovements, updateMovement, removeMovement, getAllPendingReqs, killP, acceptP } from '../modules/animation'
 import { useToast } from 'primevue/usetoast';
 
 const toast = useToast();
@@ -22,6 +22,45 @@ const statuses = ref([
     { label: 'OUTOFSTOCK', value: 'outofstock' }
 ]);
 
+const pendings = ref([])
+
+const killPending = async (id) => {
+    const result = await killP(id)
+
+    toast.add({ severity: 'info', summary: 'Info', detail: result.data.message, life: 3000 });
+     // productService.getProducts().then((data) => (products.value = data));
+     getAllMovements().then((data) => {
+        if (data.status === 201) {
+            products.value = data.data;
+        }
+    });
+
+    getAllCategories().then((data) => {
+        if (data.status === 201) {
+            categories.value = data.data;
+        }
+    })
+}
+
+const acceptPending = async (id) => {
+    const result = await acceptP(id)
+
+    toast.add({ severity: 'info', summary: 'Info', detail: result.data.message, life: 3000 });
+
+     // productService.getProducts().then((data) => (products.value = data));
+     getAllMovements().then((data) => {
+        if (data.status === 201) {
+            products.value = data.data;
+        }
+    });
+
+    getAllCategories().then((data) => {
+        if (data.status === 201) {
+            categories.value = data.data;
+        }
+    })
+}
+
 const productService = new ProductService();
 
 onBeforeMount(() => {
@@ -29,6 +68,10 @@ onBeforeMount(() => {
 });
 const categories = ref([])
 onMounted(() => {
+    getAllPendingReqs().then((data) => {
+        pendings.value = data.data
+    })
+
     // productService.getProducts().then((data) => (products.value = data));
     getAllMovements().then((data) => {
         if (data.status === 201) {
@@ -206,7 +249,7 @@ const initFilters = () => {
                             {{ slotProps.data.name }}
                         </template>
                     </Column>
-                    
+
 
                     <Column field="category" header="Category" :sortable="true" headerStyle="width:14%; min-width:10rem;">
                         <template #body="slotProps">
@@ -214,7 +257,8 @@ const initFilters = () => {
                             {{ slotProps.data.category }}
                         </template>
                     </Column>
-                    <Column field="description" header="Description" :sortable="true" headerStyle="width:14%; min-width:10rem;">
+                    <Column field="description" header="Description" :sortable="true"
+                        headerStyle="width:14%; min-width:10rem;">
                         <template #body="slotProps">
                             <span class="p-column-title">Description</span>
                             {{ slotProps.data.description }}
@@ -336,17 +380,16 @@ const initFilters = () => {
         <div class="col-12">
             <div class="card">
                 <Toast />
- 
 
-                <DataTable ref="dt" :value="products" v-model:selection="selectedProducts" dataKey="id" :paginator="true"
-                    :rows="10" :filters="filters"
+
+                <DataTable ref="dt" :value="pendings"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} movements"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} pendings"
                     responsiveLayout="scroll">
                     <template #header>
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                      
+
                         </div>
                     </template>
                     <Column header="Image" headerStyle="width:14%; min-width:10rem;">
@@ -362,27 +405,33 @@ const initFilters = () => {
                             {{ slotProps.data.name }}
                         </template>
                     </Column>
-                    
+
 
                     <Column field="category" header="Category" :sortable="true" headerStyle="width:14%; min-width:10rem;">
                         <template #body="slotProps">
                             <span class="p-column-title">Category</span>
-                            {{ slotProps.data.category }}
+                            {{ slotProps.data.categoryId }}
                         </template>
                     </Column>
-                    <Column field="description" header="Description" :sortable="true" headerStyle="width:14%; min-width:10rem;">
+                    <Column field="description" header="Description" :sortable="true"
+                        headerStyle="width:14%; min-width:10rem;">
                         <template #body="slotProps">
                             <span class="p-column-title">Description</span>
                             {{ slotProps.data.description }}
                         </template>
                     </Column>
-         
+
                     <div class="w-8"></div>
                     <Column headerStyle="min-width:10rem;">
                         <template #body="slotProps">
-               
-                            <Button title="cancel" icon="pi pi-stopwatch" class="p-button-rounded p-button-danger mt-2"
-                                 />
+                            <div style="display: flex;">
+
+                                <Button title="cancel" @click="killPending(slotProps.data._id)" icon="pi pi-stopwatch"
+                                    class="p-button-rounded p-button-danger mt-2" />
+                                <span style="width: 10px;"></span>
+                                <Button title="accept" @click="acceptPending(slotProps.data._id)" icon="pi pi-check"
+                                    class="p-button-rounded p-button-success mt-2" />
+                            </div>
                         </template>
                     </Column>
                 </DataTable>
@@ -401,7 +450,7 @@ const initFilters = () => {
                         <label for="description">Description</label>
                         <Textarea id="description" v-model="product.description" required="true" rows="3" cols="20" />
                     </div>
-                
+
 
                     <div class="field">
                         <label class="mb-3">Category</label>
@@ -412,7 +461,7 @@ const initFilters = () => {
                             </div>
                         </div>
                     </div>
-   
+
                     <template #footer>
                         <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="hideDialog" />
                         <Button label="Save" icon="pi pi-check" class="p-button-text" @click="saveProduct" />

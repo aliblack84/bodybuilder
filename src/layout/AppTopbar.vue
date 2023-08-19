@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, onBeforeMount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, onBeforeMount, watch } from 'vue';
 import { useLayout } from '@/layout/composables/layout';
 import { useRouter } from 'vue-router';
 import { getAdminStaff } from '../modules/logs'
@@ -11,8 +11,33 @@ const date = ref('');
 const router = useRouter();
 const password = ref(false);
 const visible = ref(false);
+
+const filterDate = ref(null);
+const filterTime = ref(null);
 const nodes = ref([
 ]);
+
+const filteredLogs = computed(() => {
+  if (!filterDate.value) {
+    return logs.value; 
+  }
+
+  return logs.value.filter(log => {
+    const logDate = new Date(log.createdDate);
+    console.log(logDate);
+    return logDate.getDate() === filterDate.value.getDate() &&
+           logDate.getMonth() === filterDate.value.getMonth() &&
+           logDate.getFullYear() === filterDate.value.getFullYear();
+  }); 
+});
+
+const reset = async () => {
+    const result = await getAdminStaff()
+    console.log(result);
+    filterDate.value = ''
+
+    logs.value = result.data;
+}
 
 const logs = ref([])
 
@@ -20,6 +45,10 @@ onBeforeMount(() => {
     initFilters1()
 })
 
+watch(filterDate, (v) => {
+    // logs.value = []
+})
+    
 onMounted(async () => {
     const result = await getAdminStaff()
     console.log(result);
@@ -90,25 +119,23 @@ const isOutsideClicked = (event) => {
 
     return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
 }
-;
+    ;
 
 const items = ref([
-  { id: 1, dateTime: new Date('2023-08-15T10:30:00') },
-  { id: 2,  dateTime: new Date('2023-08-15T12:00:00') },
-  { id: 3,  dateTime: new Date('2023-08-16T15:00:00') },
-  { id: 4,  dateTime: new Date('2023-08-16T09:30:00') },
-  { id: 5, dateTime: new Date('2023-08-17T19:00:00') },
+    { id: 1, dateTime: new Date('2023-08-15T10:30:00') },
+    { id: 2, dateTime: new Date('2023-08-15T12:00:00') },
+    { id: 3, dateTime: new Date('2023-08-16T15:00:00') },
+    { id: 4, dateTime: new Date('2023-08-16T09:30:00') },
+    { id: 5, dateTime: new Date('2023-08-17T19:00:00') },
 ]);
 
-const filterDate = ref(null);
-const filterTime = ref(null);
 
 const filteredItems = computed(() => {
-  return items.value.filter(item => {
-    const dateMatch = !filterDate.value || new Date(item.dateTime).toDateString() === filterDate.value.toDateString();
-    const timeMatch = !filterTime.value || new Date(item.dateTime).toLocaleTimeString().includes(filterTime.value);
-    return dateMatch && timeMatch;
-  });
+    return items.value.filter(item => {
+        const dateMatch = !filterDate.value || new Date(item.dateTime).toDateString() === filterDate.value.toDateString();
+        const timeMatch = !filterTime.value || new Date(item.dateTime).toLocaleTimeString().includes(filterTime.value);
+        return dateMatch && timeMatch;
+    });
 });
 </script>
 
@@ -151,24 +178,26 @@ const filteredItems = computed(() => {
  <br>
  <br> -->
                 <div class="card">
+                    <button @click="reset">Reset</button>
                     <div class="date-time-filter">
-    <label for="datePicker">Filter by Date   :      </label>
-    <Calendar v-model="filterDate" id="datePicker" showIcon />
+                        <label for="datePicker">Filter by Date : </label>
+                        <Calendar v-model="filterDate" id="datePicker" showIcon />
 
-    <ul>
-    </ul>
-  </div>
-                    <DataTable :value="logs" :paginator="true" :rows="5" :rowsPerPageOptions="[5, 10, 25]" v-model:filters="filters1" :filters="filters1" 
-                    :globalFilterFields="['task', 'country.name', 'representative.name', 'status']">
+                        <ul>
+                        </ul>
+                    </div>
+                    <DataTable :value="filteredLogs" :paginator="true" :rows="5" :rowsPerPageOptions="[5, 10, 25]"
+                        v-model:filters="filters1" :filters="filters1"
+                        :globalFilterFields="['task', 'country.name', 'representative.name', 'status']">
                         <template #header>
-                        <div class="flex justify-content-between flex-column sm:flex-row">
-                            <span class="p-input-icon-left mb-2">
-                                <i class="pi pi-search" />
-                                <InputText v-model="filters1['global'].value" placeholder="Keyword Search"
-                                    style="width: 100%" />
-                            </span>
-                        </div>
-                    </template>
+                            <div class="flex justify-content-between flex-column sm:flex-row">
+                                <span class="p-input-icon-left mb-2">
+                                    <i class="pi pi-search" />
+                                    <InputText v-model="filters1['global'].value" placeholder="Keyword Search"
+                                        style="width: 100%" />
+                                </span>
+                            </div>
+                        </template>
                         <Column field="task" header="Task" expander>
                             <template #body="{ data }">
                                 {{ data.task }}
