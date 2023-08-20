@@ -4,6 +4,10 @@ import CustomerService from '@/service/CustomerService';
 import ProductService from '@/service/ProductService';
 import { ref, onBeforeMount, onMounted, watch } from 'vue';
 import { getUsers } from '../modules/users'
+
+import { premiumUser, unPremiumUser, blockUser, unBlockUser } from '../modules/premium'
+import { useToast } from 'primevue/usetoast';
+
 const open = ref(false)
 const checked = ref(false)
 const customer3 = ref(null);
@@ -16,6 +20,8 @@ const initFilters1 = () => {
     filters1.value = {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         name: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+        email: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+        gender: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
         country: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
         date: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
         verified: { value: null, matchMode: FilterMatchMode.EQUALS }
@@ -41,10 +47,70 @@ const formatDate = (value) => {
 
     return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${date.getMinutes()}`
 };
+const toast = useToast();
 
-const setPremiumTrue = (id) => {
-    console.log(id);
+const setPremium = async (id, status) => {
+    if (status) {
+        const result = await premiumUser(id);
+        toast.add({ severity: 'info', summary: 'Info', detail: result.data.message, life: 3000 });
+
+        getUsers().then((allUsers) => {
+
+            users.value = allUsers.data;
+            filtered.value = allUsers.data;
+            loading1.value = false;
+            console.log(filtered.value);
+        })
+
+
+        initFilters1()
+    } else {
+        const result = await unPremiumUser(id);
+        toast.add({ severity: 'info', summary: 'Info', detail: result.data.message, life: 3000 });
+        getUsers().then((allUsers) => {
+
+            users.value = allUsers.data;
+            filtered.value = allUsers.data;
+            loading1.value = false;
+            console.log(filtered.value);
+        })
+
+
+        initFilters1()
+    }
 }
+
+const setBlock = async (id, status) => {
+    if (status) {
+        const result = await blockUser(id);
+        toast.add({ severity: 'info', summary: 'Info', detail: result.data.message, life: 3000 });
+
+        getUsers().then((allUsers) => {
+
+            users.value = allUsers.data;
+            filtered.value = allUsers.data;
+            loading1.value = false;
+            console.log(filtered.value);
+        })
+
+
+        initFilters1()
+    } else {
+        const result = await unBlockUser(id);
+        toast.add({ severity: 'info', summary: 'Info', detail: result.data.message, life: 3000 });
+        getUsers().then((allUsers) => {
+
+            users.value = allUsers.data;
+            filtered.value = allUsers.data;
+            loading1.value = false;
+            console.log(filtered.value);
+        })
+
+
+        initFilters1()
+    }
+}
+
 const calculateCustomerTotal = (name) => {
     let total = 0;
     if (customer3.value) {
@@ -90,7 +156,7 @@ const update = () => {
     }
     users.value.map((user) => {
         const uGen = user.gender === 'male' ? 'men' : 'women'
-        const pStatus = user.preStatus.stat === 3 ? 'premium' : 'normal'
+        const pStatus = user.premium === true ? 'premium' : 'normal'
         const age = (new Date()).getFullYear() - user.birthYear
         if ((uGen === gender.value || gender.value === 'all') && (user.role === role.value || role.value === 'all') && (pStatus === preStatus.value || preStatus.value === 'all')) {
             if (ageR.value === 'all') {
@@ -127,7 +193,7 @@ watch(ageR, (value) => {
 <template>
     <div class="grid">
         <div class="col-12">
-
+<Toast/>
             <div class="card flex flex-wrap justify-content-center gap-4">
                 <div class="flex align-items-center">
                     <RadioButton v-model="preStatus" inputId="ingredient1" name="pizza" value="normal" />
@@ -233,7 +299,6 @@ watch(ageR, (value) => {
                         </template>
                     </Column>
                     <Dialog v-model:open="open" header="Message" :style="{ width: '50vw' }">
-                        <p> difudfhduhfudcbducubc </p>
                         <Button style="float: right;" label="Sent to Email" icon="pi pi-link" @click="open = true" />
 
                     </Dialog>
@@ -305,8 +370,9 @@ watch(ageR, (value) => {
                     <Column field="Premium" header="Premium" dataType="boolean" bodyClass="text-center"
                         style="min-width: 8rem">
                         <template #body="{ data }">
-                            <Button icon="pi pi-check" @click="setPremiumTrue(data.email)" />
-                            
+                            <Button icon="pi pi-check" @click="setPremium(data.id, true)" v-if="data.premium != true" />
+                            <Button icon="pi pi-trash" severity="danger" @click="setPremium(data.id, false)" v-else />
+
                         </template>
                         <template #filter="{ filterModel }">
                             <TriStateCheckbox v-model="filterModel.value" />
@@ -314,8 +380,9 @@ watch(ageR, (value) => {
                     </Column>
 
                     <Column field="Block" header="Block" style="min-width: 8rem">
-                        <template #body>
-                            <Button icon="pi pi-ban" @click="visible = true" />
+                        <template #body="{ data }">
+                            <Button icon="pi pi-check" @click="setBlock(data.id, true)" v-if="data.blocked != true" />
+                            <Button icon="pi pi-trash" severity="danger" @click="setBlock(data.id, false)" v-else />
                         </template>
                     </Column>
 

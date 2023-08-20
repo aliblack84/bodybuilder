@@ -9,12 +9,11 @@ const model = ref([
         items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' },
         { label: 'Users', icon: 'pi pi-fw pi-table', to: '/users' },
         // { label: 'Panel', icon: 'pi pi-fw pi-tablet', to: '/panel' },
-        { label: 'Chart menu', icon: 'pi pi-fw pi-chart-bar', to: '/chart' },
+        { label: 'Data', icon: 'pi pi-fw pi-chart-bar', to: '/chart' },
         { label: 'Upload', icon: 'pi pi-upload', to: '/file' },
         {label:'Animations' , icon :'pi pi-images' , to:'/pages/Crud'},
-        {label:"messages" , icon:"pi pi-fw pi-comment" ,to:'/message'},
-        {label:"premium requests" , icon:"pi pi-fw pi-shield" ,to:'/premium'},
-        {label:"profile dialog" , icon:"" ,to:'/profileDialog'}
+        {label:"Tickets" , icon:"pi pi-fw pi-comment" ,to:'/message'},
+        {label:"Premium Requests" , icon:"pi pi-fw pi-shield" ,to:'/premium'},
 
 
     ]

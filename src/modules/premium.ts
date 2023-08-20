@@ -63,3 +63,51 @@ export const getAllAccepted = async () => {
         return error.response;
     }
 }
+
+export const premiumUser = async (id: string) => {
+    try {
+        return await axios.post(getUrl('/user/premium'), {userId: id}, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('jwtToken')}`
+            }
+        })
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const unPremiumUser = async (id: string) => {
+    try {
+        return await axios.post(getUrl('/user/un-premium'), {userId: id}, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('jwtToken')}`
+            }
+        })
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const blockUser = async (id: string) => {
+    try {
+        return await axios.post(getUrl('/user/block'), {userId: id}, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('jwtToken')}`
+            }
+        })
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const unBlockUser = async (id: string) => {
+    try {
+        return await axios.post(getUrl('/user/un-block'), {userId: id}, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('jwtToken')}`
+            }
+        })
+    } catch (error) {
+        return error.response;
+    }
+}
