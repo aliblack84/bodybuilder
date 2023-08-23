@@ -83,7 +83,7 @@ const router = createRouter({
     ]
 });
 
-router.beforeEach(async (to, from) => {
+router.afterEach(async (to, from) => {
     if (to.path === '/auth/login') {
         return true
     } else {

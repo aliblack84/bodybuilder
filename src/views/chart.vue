@@ -44,14 +44,14 @@
                 <div class="flex justify-content-between mb-3">
                     <div class="text-3xl">
 
-                        <span class="block text-500 font-medium mb-3">Deleted</span>
+                        <span class="block text-500 font-medium mb-3">Premium Users</span>
                         <br>
-                        <div class="text-900 font-medium text-5xl">{{ deletedUsers }}</div>
+                        <div class="text-900 font-medium text-5xl">{{ nPremiumUsersUsers }}</div>
                         <br>
                         <div class="text-900 font-medium text-xl"></div>
                     </div>
                     <div class="flex align-items-center justify-content-center " style="width: 2.5rem; height: 2.5rem">
-                        <i class="pi pi-delete-left  text-red-500 text-xl text-8xl mr-6 mt-3 "></i>
+                        <i class="pi pi-shield  text-teal-500 text-xl text-8xl mr-6 mt-3 "></i>
                     </div>
                 </div>
 
@@ -156,7 +156,8 @@
     </div>
 
     <div class="card col-12 xl:col-6 w-full ">
-        <h3>Now Year Data</h3>
+        <h3>Users data</h3>
+ 
         <Chart type="bar" :data="chartData" :options="chartOptions" class="h-30rem" />
 
     </div>
@@ -254,7 +255,7 @@
     <br>
     <br>
     <div class="card col-12 xl:col-6 w-full ">
-        <h3>Now Year Age Data</h3>
+        <h3>Users age data</h3>
         <Chart type="bar" :data="ageChartData" :options="ageChartOptions" class="h-30rem" />
 
     </div>
@@ -273,7 +274,7 @@ const ageChartOptions = ref();
 const onlineUsers = ref(0);
 const offlineUsers = ref(0);
 const blockedUsers = ref(0);
-const deletedUsers = ref(0);
+const nPremiumUsersUsers = ref(0);
 const animationsCount = ref(0);
 const manUsers = ref(0);
 const womanUsers = ref(0);
@@ -320,7 +321,7 @@ onMounted(async () => {
         onlineUsers.value = result.data.data['onlineUsers']
         offlineUsers.value = result.data.data['offlineUsers']
         blockedUsers.value = result.data.data['blockedUsers']
-        deletedUsers.value = result.data.data['deletedUsers']
+        nPremiumUsersUsers.value = result.data.data['premiumUsers']
         animationsCount.value = result.data.data['animationsCount']
         manUsers.value = result.data.data.genderData.man
         womanUsers.value = result.data.data['genderData']['woman']
