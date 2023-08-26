@@ -23,3 +23,7 @@ export const testAuth = async () => {
         return error.response;
     }
 }
+
+export const log_out = () => {
+    localStorage.removeItem('jwtToken')
+}

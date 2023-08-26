@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 
 import AppMenuItem from './AppMenuItem.vue';
+import { log_out } from '../modules/authentication';
 
 const model = ref([
     {
@@ -76,6 +77,11 @@ const model = ref([
 
     }
 ]);
+
+const signOut = () => {
+    log_out();
+    location.reload()
+}
 </script>
 
 <template>
@@ -84,6 +90,7 @@ const model = ref([
             <app-menu-item v-if="!item.separator" :item="item" :index="i"></app-menu-item>
             <li v-if="item.separator" class="menu-separator"></li>
         </template>
+        <Button label="Logout" icon="pi pi-sign-out" class="mr-2" @click="signOut()" />
         <li>
        
         </li>
