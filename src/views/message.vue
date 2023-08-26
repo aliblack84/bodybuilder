@@ -12,7 +12,7 @@
                 <span class="text-700 "><a>{{ message.senderEmail }}</a></span>
             </span>
         </div>
-        <Button style="float: right;" label="Show" icon="pi pi-external-link" @click="visible = true" />
+        <Button style="float: right;" label="Show" icon="pi pi-external-link" @click="openDialog(message)" />
         <Dialog v-model:visible="visible" header="Message" :style="{ width: '50vw' }">
             <p> {{ message.message }} </p>
 
@@ -48,22 +48,22 @@
                 <span class="text-700 "><a>{{ message.senderEmail }}</a></span>
             </span>
         </div>
-        <Button style="float: right;" label="Show" icon="pi pi-external-link" @click="visible = true" />
-        <Dialog v-model:visible="visible" header="Message" :style="{ width: '50vw' }">
-            <p> {{ message.message }} </p>
-
-            <span class="p-input-icon-left">
-                <i class="pi pi-paperclip" />
-                <InputText v-model="subject" placeholder="Subject" />
-            </span>
-            <div style="height: 20px;"></div>
-            <Textarea v-model="messageCont" rows="5" cols="30" placeholder="Message" />
-            <p></p>
-            <Button style="float: right;" label="Respond" icon="pi pi-link" @click="respond(message._id)" />
-
-        </Dialog>
+        <Button style="float: right;" label="Show" icon="pi pi-external-link" @click="openDialog(message)" />
         <Toast />
     </div>
+    <Dialog v-model:visible="visible" header="Message" :style="{ width: '50vw' }">
+        <p> {{ messageSel.message }} </p>
+
+        <span class="p-input-icon-left">
+            <i class="pi pi-paperclip" />
+            <InputText v-model="subject" placeholder="Subject" />
+        </span>
+        <div style="height: 20px;"></div>
+        <Textarea v-model="messageCont" rows="5" cols="30" placeholder="Message" />
+        <p></p>
+        <Button style="float: right;" label="Respond" icon="pi pi-link" @click="respond(messageSel._id)" />
+
+    </Dialog>
     <div v-if="messages.length == 0 && loading2 === false">
         <p style="font-weight: bold; color: rgb(176, 173, 173);">Nothing here</p>
     </div>
@@ -84,7 +84,7 @@ const visible = ref(false);
 const toast = useToast();
 const subject = ref('')
 const messageCont = ref('')
-
+const messageSel = ref()
 const loading1 = ref(false)
 const loading2 = ref(false)
 
@@ -111,11 +111,19 @@ const respond = async (ticketId) => {
 
     if (result.status === 201) {
         toast.add({ severity: 'success', summary: 'Success', detail: 'Responded!', life: 3000 });
+        visible.value = false;
+        messageCont.value = ''
         return;
     }
 
     toast.add({ severity: 'error', summary: 'Error', detail: 'An error oucured', life: 3000 });
 
+}
+
+
+const openDialog = async (message) => {
+    messageSel.value = message;
+    visible.value = true;
 }
 
 </script>
